@@ -1,0 +1,6 @@
+h1. ER Developer Pane
+
+ExpressionEngine extension that adds a developer toolbox pane as a global variable.
+
+*Instructions coming soon...*
+

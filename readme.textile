@@ -4,6 +4,8 @@ ExpressionEngine extension that adds a developer toolbar as a global variable.
 
 h2. Instructions
 
+* Place ext.er_developer_toolbar.php in your system/extensions directory
+* Place lang.er_developer_toolbar.php in your system/language/english directory
 * Enable the extension in your Extensions Manager
 * Place the global variable <code>{er_developer_toolbar}</code> in one of your templates. I put it right before my <code></body></code> tag.
 * Browse your site with quick details and links at your finger tips!

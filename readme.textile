@@ -2,6 +2,12 @@ h1. ER Developer Toolbar
 
 ExpressionEngine extension that adds a developer toolbar as a global variable.
 
+h2. About the Extension
+
+After about my 3rd or 4th EE website creation I decided it would be worth while to create an embed template that game me links to things I frequently went to during the development process. Particularly I wanted to have links to these pages straight from the front-end of my sites. The template included links to clearing cache, extensions, general system settings etc. I ended up using this embed template with every site so I decided to turn it into an extension.
+
+In its current state it is nothing but a toolbar fixed at the top of your window with the logged member name, some quick links and the elapsed time and total query count. I'm sure it will grow as others use it so please send any suggestions my way to erik@erikreagan.com.
+
 h2. Instructions
 
 * Place ext.er_developer_toolbar.php in your system/extensions directory
@@ -9,6 +15,20 @@ h2. Instructions
 * Enable the extension in your Extensions Manager
 * Place the global variable <code>{er_developer_toolbar}</code> in one of your templates. I put it right before my <code></body></code> tag.
 * Browse your site with quick details and links at your finger tips!
+
+h2. Configuration
+
+*Member Groups*
+
+By default this extension only parses the global variable for Super Admins. You can, however, select the member groups you want to see this in the Settings of this extension. Keep in mind that the toolbar is the same for everyone regardless of their access around the CP. So if you have a member group that can't see Modules but you have them selected in this extension, they will still be linked to the page (on which they will receive an access privileges message).
+
+*CSS*
+
+You may modify the CSS as you like if you prefer it to match your site design. You can be as creative as you would like, moving it anywhere around the screen. It just depends on where in your template you insert the <code>{er_developer_toolbar}</code> global variable and how you format your CSS.
+
+h2. MSM Compatibility
+
+If you are using MSM the toolbar will display one additional setting/link and that is whether or not the current Site is on. Keep in mind, however, that the extension settings are the same across all sites in an MSM setup so you cannot customize the CSS on a per-site basis (yet).
 
 
 h2. Change Log

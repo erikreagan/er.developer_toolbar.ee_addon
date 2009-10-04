@@ -21,6 +21,21 @@ $L = array(
 'css' =>
 'You can customize the CSS for the toolbar if you prefer to match it better to the style of your site',
 
+'show_user' =>
+'Show current username with link to "My Account" page?',
+
+'show_templates' =>
+'Show link to Templates Manager?',
+
+'show_extensions' =>
+'Show link to Extensions Manager?',
+
+'show_plugins' =>
+'Show link to Plugin Manager?',
+
+'show_modules' =>
+'Show link to Modules?',
+
 
 
 

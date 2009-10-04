@@ -65,12 +65,18 @@ class Er_developer_toolbar
       $member_groups = $DB->query("SELECT group_id,site_id,group_title FROM exp_member_groups WHERE `site_id` = " . $PREFS->ini("site_id"));
 
       // Create an array of our member groups in the format that $settings needs
-      foreach ($member_groups->result as $group) {
+      foreach ($member_groups->result as $group)
+      {
          $member_groups_array[$group['group_id']] = $group['group_title'];
       }      
       
       $settings = array();    
       $settings['groups'] = array('ms', $member_groups_array, '1');
+      $settings['show_user'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
+      $settings['show_templates'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
+      $settings['show_extensions'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
+      $settings['show_plugins'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
+      $settings['show_modules'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
       $settings['css'] = array('t','','');
 
       return $settings;
@@ -85,10 +91,15 @@ class Er_developer_toolbar
    {
       global $DB;
       
-      // By default we want to restrict the settings to the super admin group which is group_id '1'
-      $settings = array();
-      $settings['groups'] = array('1');
-      $settings['css'] = "
+      // By default we want to restrict the settings to the Super Admin group which is group_id '1'
+      $settings = array(
+         'groups'          => array('1'),
+         'show_user'       => 'y',
+         'show_templates'  => 'n',
+         'show_extensions' => 'y',
+         'show_plugins'    => 'y',
+         'show_modules'    => 'n',
+         'css'             => '
 #er_developer_toolbar {
    position: fixed;
    display: block;
@@ -120,8 +131,6 @@ class Er_developer_toolbar
    font-size: 11px;
    font-weight: bold;
    padding-right: 15px;
-   margin-right: 20px;
-   border-right: 2px solid #336699;
 }
 #er_developer_toolbar ul#toolbar_quick_links {
    list-style: none;
@@ -133,6 +142,8 @@ class Er_developer_toolbar
    float: left;
    margin-right: 20px;
    border-right: 2px solid #336699;
+   border-left: 2px solid #336699;
+   padding-left: 20px;
 }
 #er_developer_toolbar ul#toolbar_member_data li { float: left; margin-right: 20px; }
 #er_developer_toolbar ul#toolbar_calc { list-style: none; float: right; font-size: 11px; }
@@ -140,7 +151,8 @@ class Er_developer_toolbar
 
 #er_developer_toolbar .green { color: green; }
 #er_developer_toolbar .red { color: red; }
-";
+'
+         );
       
       $hooks = array(
          'sessions_end' => 'sessions_end'
@@ -256,9 +268,6 @@ class Er_developer_toolbar
       $system_on_class = ($system_on == 'on') ? 'green' : 'red' ;
       $debug_on_class = ($debug_on == 'on') ? 'green' : 'red' ;
       
-
-      
-      
       // Begin toolbar by grabbing the CSS settings
       $toolbar = "<style type='text/css'>
 ".$this->settings['css']."
@@ -268,14 +277,24 @@ class Er_developer_toolbar
       $toolbar .= "
 <div id='er_developer_toolbar'>
 
-   <p class='toolbar_heading'>Developer Toolbar</p>
+   <p title='by Erik Reagan' class='toolbar_heading'>Developer Toolbar</p>
 
-   <ul id='toolbar_member_data'>
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=myaccount'>{screen_name}</a> ({group_title})</li>
+   <ul id='toolbar_member_data'>";
+      
+      if ($this->settings['show_user'] == 'yes')
+      {
+         $toolbar .= "
+      <li><a title='You are in the {group_title} member group' href='".$PREFS->core_ini['cp_url']."?C=myaccount'>{screen_name}</a> (<a href='".$PREFS->core_ini['cp_url']."?C=logout'>logout</a>)</li>";
+      } else {
+         $toolbar .= "
+      <li><a href='".$PREFS->core_ini['cp_url']."?C=logout'>Logout</a></li>";
+      }
+
+      $toolbar .= "
    </ul>
 
    <ul id='toolbar_quick_links'>
-      <li><strong>System Status: </strong><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=general_cfg' class='".$system_on_class."'>".ucfirst($system_on)."</a></li>";
+      <li><strong>System Status: </strong><a title='Click to change the system status' href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=general_cfg' class='".$system_on_class."'>".ucfirst($system_on)."</a></li>";
       
       
       // If we are running with MSM we want to also show if the current Site is on
@@ -286,19 +305,42 @@ class Er_developer_toolbar
          $site_on_class = ($site_on == 'on') ? 'green' : 'red' ;
 
          $toolbar .= "
-      <li><strong>Site Status: </strong><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=general_cfg' class='".$site_on_class."'>".ucfirst($site_on)."</a></li>";
+      <li><strong>Site Status: </strong><a title='Click to change the site status' href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=general_cfg' class='".$site_on_class."'>".ucfirst($site_on)."</a></li>";
       
       }
       
-      
       $toolbar .= "
       
-      <li><strong>Debug Mode: </strong><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=output_cfg' class='".$debug_on_class."'>".ucfirst($debug_on)."</a></li>
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear Cache</a></li>
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=templates'>Template Manager</a></li>
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=extensions_manager'>Extensions Manager</a></li>
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugin Manager</a></li>
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=modules'>Modules</a></li>
+      <li><strong>Debug Mode: </strong><a title='Click to change the debug mode' href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=output_cfg' class='".$debug_on_class."'>".ucfirst($debug_on)."</a></li>";
+      
+      $toolbar .= "
+      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear Cache</a></li>";
+      
+      if ($this->settings['show_templates'] == 'yes')
+      {
+         $toolbar .= "
+      <li><a href='".$PREFS->core_ini['cp_url']."?C=templates'>Template Manager</a></li>";
+      }
+      
+      if ($this->settings['show_extensions'] == 'yes')
+      {
+         $toolbar .= "
+      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=extensions_manager'>Extensions Manager</a></li>";
+      }
+      
+      if ($this->settings['show_plugins'] == 'yes')
+      {
+         $toolbar .= "
+      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugin Manager</a></li>";
+      }
+      
+      if ($this->settings['show_modules'] == 'yes')
+      {
+         $toolbar .= "
+      <li><a href='".$PREFS->core_ini['cp_url']."?C=modules'>Modules</a></li>";
+      }
+      
+      $toolbar .= "
    </ul>
 
    <ul id='toolbar_calc'>

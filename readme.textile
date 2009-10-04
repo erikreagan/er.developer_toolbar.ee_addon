@@ -1,6 +1,16 @@
-h1. ER Developer Pane
+h1. ER Developer Toolbar
 
-ExpressionEngine extension that adds a developer toolbox pane as a global variable.
+ExpressionEngine extension that adds a developer toolbar as a global variable.
 
-*Instructions coming soon...*
+h2. Instructions
 
+* Enable the extension in your Extensions Manager
+* Place the global variable <code>{er_developer_toolbar}</code> in one of your templates. I put it right before my <code></body></code> tag.
+* Browse your site with quick details and links at your finger tips!
+
+
+h2. Change Log
+
+*Oct 3, 2009: 0.5.0*
+
+* Initial Release

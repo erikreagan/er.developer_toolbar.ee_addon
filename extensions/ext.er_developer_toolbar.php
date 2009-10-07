@@ -73,6 +73,7 @@ class Er_developer_toolbar
       $settings             = array();    
       $settings['groups']   = array('ms', $member_groups_array, '1');
       $settings['position'] = array('s', array('top hor'=>"Top",'right vert'=>"Right",'bot hor'=>"Bottom",'left vert'=>"Left"),'top hor');
+      $settings['check_for_extension_updates'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
 
 
       return $settings;
@@ -89,12 +90,15 @@ class Er_developer_toolbar
       
       // By default we want to restrict the settings to the Super Admin group which is group_id '1'
       $settings = array(
-         'groups'   => array('1'),
-         'position' => 'top hor'
+         'groups'                      => array('1'),
+         'position'                    => 'top hor',
+         'check_for_extension_updates' => 'yes',
          );
       
       $hooks = array(
-         'sessions_end' => 'sessions_end'
+         'sessions_end'                    => 'sessions_end',
+         'lg_addon_update_register_source' => 'lg_addon_update_register_source',
+         'lg_addon_update_register_addon'  => 'lg_addon_update_register_addon'
       );
 
       foreach ($hooks as $hook => $method)
@@ -406,6 +410,61 @@ class Er_developer_toolbar
       
       return $toolbar;
       
+   }
+   
+   
+   /**
+    * Register a new Addon Source
+    *
+    * @param   array $sources The existing sources
+    * @return  array The new source list
+    * @since   version 1.0.0
+    */
+   function lg_addon_update_register_source($sources)
+   {
+       global $EXT;
+       // -- Check if we're not the only one using this hook
+       if($EXT->last_call !== FALSE)
+           $sources = $EXT->last_call;
+
+       // add a new source
+       // must be in the following format:
+       /*
+       <versions>
+           <addon id='LG Addon Updater' version='2.0.0' last_updated="1218852797" docs_url="http://leevigraham.com/" />
+       </versions>
+       */
+       if($this->settings['check_for_extension_updates'] == 'yes')
+       {
+           $sources[] = 'http://erikreagan.com/ee-addons/versions.xml';
+       }
+       return $sources;
+
+   }
+
+
+   /**
+    * Register a new Addon
+    *
+    * @param    array $addons The existing sources
+    * @return   array The new addon list
+    * @since    version 1.0.0
+    */
+   function lg_addon_update_register_addon($addons)
+   {
+   	global $EXT;
+   	// -- Check if we're not the only one using this hook
+   	if($EXT->last_call !== FALSE)
+   		$addons = $EXT->last_call;
+
+   	// add a new addon
+   	// the key must match the id attribute in the source xml
+   	// the value must be the addons current version
+   	if($this->settings['check_for_extension_updates'] == 'yes')
+   	{
+   		$addons['ER Developer Toolbar'] = $this->version;
+   	}
+   	return $addons;
    }
    
 }

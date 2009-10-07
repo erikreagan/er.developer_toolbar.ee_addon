@@ -21,8 +21,8 @@ $L = array(
 'position' =>
 'Choose the position of the bar within the browser window',
 
-'debug_1' =>
-'PHP/SQL error messages shown only to Super Admins',
+'check_for_extension_updates' =>
+'Would you like this extension to check for updates and display them on your CP homepage?',
 
 
 

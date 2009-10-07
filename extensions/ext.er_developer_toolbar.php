@@ -166,7 +166,7 @@ class Er_developer_toolbar
     *
     * @param object     the session object
     **/
-   function sessions_end( &$s )
+   function sessions_end( $s )
    {
       global $EXT, $IN, $PREFS;
 
@@ -178,6 +178,21 @@ class Er_developer_toolbar
          return;
       }
       
+      // echo "<pre>";
+      // print_r($s->userdata);
+      // echo "</pre>";
+      // exit;
+      
+      $user_access = array(
+         'can_access_cp' => $s->userdata['can_access_cp'],
+         'can_access_admin' => $s->userdata['can_access_admin'],
+         'can_access_design' => $s->userdata['can_access_design'],
+         'can_access_modules' => $s->userdata['can_access_modules'],
+         'can_access_edit' => $s->userdata['can_access_edit'],
+         'can_admin_utilities' => $s->userdata['can_admin_utilities'],
+         'can_admin_preferences' => $s->userdata['can_admin_preferences']
+         );      
+      
       if ($EXT->last_call !== FALSE)
 		{
 			$s =& $EXT->last_call;
@@ -186,7 +201,8 @@ class Er_developer_toolbar
       $IN->global_vars['er_developer_toolbar_head'] = "
    <link rel='stylesheet' href='".$PREFS->core_ini['theme_folder_url']."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />
 ";
-      $IN->global_vars['er_developer_toolbar'] = $this->_create_toolbar();
+
+      $IN->global_vars['er_developer_toolbar'] = $this->_create_toolbar($user_access);
       
    }
    
@@ -198,16 +214,13 @@ class Er_developer_toolbar
     * @access Private
     * @return string
     */
-   function _create_toolbar()
+   function _create_toolbar($user_access)
    {
-      global $DB, $PREFS, $SESS, $LANG;
+      global $DB, $PREFS, $SESS;
       
       define('CP_URL',$PREFS->core_ini['cp_url']);
 
       $toolbar = '';
-      
-
-      
       
       // Get settings for site and debug and set CSS classes
       $system_status = ($PREFS->core_ini['is_system_on'] == 'y') ? 'on' : 'off' ;
@@ -247,7 +260,11 @@ class Er_developer_toolbar
 
    <div class='divider'></div>      
 
-   <ul>
+   <ul>";
+   
+      if ($user_access['can_access_cp'] == 'y')
+      {
+         $toolbar .= "
       <li>
          <a class='icon' id='home' title='CP Home' href='".CP_URL."'>CP Home</a>
          <div class='sub'>
@@ -265,7 +282,10 @@ class Er_developer_toolbar
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
+      </li>";
+      }
+      
+      $toolbar .= "
       <li>
          <a class='icon' id='logout' title='Logout' href='".CP_URL."?C=logout'>Logout</a>
          <div class='sub'>
@@ -277,11 +297,19 @@ class Er_developer_toolbar
       </li>
    </ul>
 
-
+";
+      if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_design'] == 'y')))
+      {
+         $toolbar .= "
    <div class='divider'></div>
 
 
-   <ul>
+   <ul>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') && ($user_access['can_admin_preferences'] == 'y'))
+      {
+         $toolbar .= "
       <li>
          <a class='icon' id='statuses' href='#'>Statuses</a>
          <div class='sub'>
@@ -289,19 +317,24 @@ class Er_developer_toolbar
                <li><strong>General Statuses</strong></li>
                <li class='status_$system_status'><a title='System is ".ucfirst($system_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='system_status'>System Status</a></li>";
       
-      if ($PREFS->core_ini['multiple_sites_enabled'] == 'y')
-      {
-         $site_status = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
-         $toolbar .= "
-               <li class='status_$site_status'><a title='Site is ".ucfirst($site_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='site_status'>Site Status</a></li>";
-      }
+         if ($PREFS->core_ini['multiple_sites_enabled'] == 'y')
+         {
+            $site_status = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
+            $toolbar .= "
+                  <li class='status_$site_status'><a title='Site is ".ucfirst($site_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='site_status'>Site Status</a></li>";
+         }
       
-      $toolbar .= "
+         $toolbar .= "
                <li class='status_$debug_status'><a title='".$debug_message."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=output_cfg' id='debug_status'>Debug Status</a></li>
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
+      </li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_design'] == 'y'))
+      {
+         $toolbar .= "
       <li>
          <a class='icon' id='templates' title='Template Manager' href='".CP_URL."?C=templates'>Template Manager</a>
          <div class='sub'>
@@ -310,7 +343,12 @@ class Er_developer_toolbar
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
+      </li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') && ($user_access['can_admin_utilities'] == 'y'))
+      {
+         $toolbar .= "
       <li>
          <a class='icon' id='cache' title='Clear Cache' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear Cache</a>
          <div class='sub'>
@@ -327,10 +365,20 @@ class Er_developer_toolbar
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
-   </ul>
-
-
+      </li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') || ($user_access['can_access_design'] == 'y'))
+      {
+         $toolbar .= "
+   </ul>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules'] == 'y')))
+      {
+         $toolbar .= "
+         
+         
    <div class='divider'></div>
 
 
@@ -339,14 +387,34 @@ class Er_developer_toolbar
          <a class='icon' id='addons' href='#'>Addons</a>
          <div class='sub visible'>
             <ul>
-               <li><strong>Add-ons</strong></li>
+               <li><strong>Add-ons</strong></li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y'))
+      {
+         $toolbar .= "
                <li><a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a></li>
-               <li><a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a></li>
-               <li><a id='modules' href='".CP_URL."?C=modules'>Modules</a></li>
+               <li><a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a></li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_modules'] == 'y'))
+      {
+         $toolbar .= "
+               <li><a id='modules' href='".CP_URL."?C=modules'>Modules</a></li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules'] == 'y')))
+      {
+         $toolbar .= "
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
+      </li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y'))
+      {
+         $toolbar .= "
       <li>
          <a class='icon' id='temp_debug' href='#'>Template Debugging</a>
          <div class='sub'>
@@ -366,15 +434,21 @@ class Er_developer_toolbar
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
-   </ul>
+      </li>";
+      }
+      
+      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules']) == 'y')
+      {
+         $toolbar .= "
+   </ul>";
+      }
 
-
-   <div class='divider'></div>
-
-";
 
    // Not quite ready for prime time either...
+   // 
+   // <div class='divider'></div>
+   // 
+   // 
    // <ul>
    //    <li>
    //       <a class='icon' id='edit' title='Edit Options' href='#'>Edit Options</a>
@@ -398,8 +472,8 @@ class Er_developer_toolbar
          <div class='sub'>
             <ul>
                <li><strong>Good to Know</strong></li>
-               <li title='Elapsed Time' id='toolbar_elapsed_time'>{elapsed_time} seconds</li>
                <li title='Total Queries' id='toolbar_queries'>{total_queries} queries</li>
+               <li title='Elapsed Time' id='toolbar_elapsed_time'>{elapsed_time} seconds</li>
             </ul>
             <span class='arrow'></span>
          </div>

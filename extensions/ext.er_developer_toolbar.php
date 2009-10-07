@@ -7,7 +7,7 @@
  * /system/extensions/ folder in your ExpressionEngine installation.
  *
  * @package ERDeveloperToolbar
- * @version 0.5.0
+ * @version 0.9.2
  * @author Erik Reagan http://erikreagan.com
  * @copyright Copyright (c) 2009 Erik Reagan
  * @see http://erikreagan.com/projects/er_developer_toolbar/
@@ -23,7 +23,7 @@ class Er_developer_toolbar
    var $settings = array();
 
    var $name = 'ER Developer Toolbar';
-   var $version = '0.5.0';
+   var $version = '0.9.2';
    var $description = 'Adds a developer toolbar as a global variable available within your templates';
    var $settings_exist = 'y';
    var $docs_url = '';
@@ -70,14 +70,10 @@ class Er_developer_toolbar
          $member_groups_array[$group['group_id']] = $group['group_title'];
       }      
       
-      $settings = array();    
-      $settings['groups'] = array('ms', $member_groups_array, '1');
-      $settings['show_user'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
-      $settings['show_templates'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
-      $settings['show_extensions'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
-      $settings['show_plugins'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
-      $settings['show_modules'] = array('r', array('yes' => "yes", 'no' => "no"), 'yes');
-      $settings['css'] = array('t','','');
+      $settings             = array();    
+      $settings['groups']   = array('ms', $member_groups_array, '1');
+      $settings['position'] = array('s', array('top hor'=>"Top",'right vert'=>"Right",'bot hor'=>"Bottom",'left vert'=>"Left"),'top hor');
+
 
       return $settings;
    }
@@ -93,65 +89,8 @@ class Er_developer_toolbar
       
       // By default we want to restrict the settings to the Super Admin group which is group_id '1'
       $settings = array(
-         'groups'          => array('1'),
-         'show_user'       => 'y',
-         'show_templates'  => 'n',
-         'show_extensions' => 'y',
-         'show_plugins'    => 'y',
-         'show_modules'    => 'n',
-         'css'             => '
-#er_developer_toolbar {
-   position: fixed;
-   display: block;
-   z-index: 9999999999;
-   width: 98%;
-   left: 0px;
-   top: 0px;
-   height: 10px;
-   font: 12px Arial, sans-serif;
-   padding: 10px 1% 12px;
-   border-bottom: 2px solid #336699;
-   background: #fff;
-   color: #000;
-   opacity: 0.8;
-   -moz-opacity: 0.8;
-   filter:alpha(opacity=80);
-}
-
-#er_developer_toolbar a { color: #000; }
-#er_developer_toolbar a:hover { color: #555; }
-
-/* Reset these elements just to be safe */
-#er_developer_toolbar p, #er_developer_toolbar a, #er_developer_toolbar ul, #er_developer_toolbar li { margin: 0px; padding: 0px; }
-
-
-#er_developer_toolbar p.toolbar_heading {
-   float: left;
-   text-transform: uppercase;
-   font-size: 11px;
-   font-weight: bold;
-   padding-right: 15px;
-}
-#er_developer_toolbar ul#toolbar_quick_links {
-   list-style: none;
-   float: left;
-}
-#er_developer_toolbar ul#toolbar_quick_links li { float: left; margin-right: 20px; }
-#er_developer_toolbar ul#toolbar_member_data {
-   list-style: none;
-   float: left;
-   margin-right: 20px;
-   border-right: 2px solid #336699;
-   border-left: 2px solid #336699;
-   padding-left: 20px;
-}
-#er_developer_toolbar ul#toolbar_member_data li { float: left; margin-right: 20px; }
-#er_developer_toolbar ul#toolbar_calc { list-style: none; float: right; font-size: 11px; }
-#er_developer_toolbar ul#toolbar_calc li { float: left; margin-left: 20px; }
-
-#er_developer_toolbar .green { color: green; }
-#er_developer_toolbar .red { color: red; }
-'
+         'groups'   => array('1'),
+         'position' => 'top hor'
          );
       
       $hooks = array(
@@ -225,11 +164,12 @@ class Er_developer_toolbar
     **/
    function sessions_end( &$s )
    {
-      global $EXT, $IN;
-      
+      global $EXT, $IN, $PREFS;
+
       if ( ! in_array($s->userdata['group_id'], $this->settings['groups']) )
       {
-         $IN->global_vars['er_developer_toolbar'] = '';
+         $IN->global_vars['er_developer_toolbar']      = '';
+         $IN->global_vars['er_developer_toolbar_head'] = '';
          
          return;
       }
@@ -239,14 +179,10 @@ class Er_developer_toolbar
 			$s =& $EXT->last_call;
 		}
       
-      // echo "<pre>";
-      // print_r($s);
-      // echo "</pre>";
-      // exit;
-      
-      $r = $this->_create_toolbar();
-      
-      $IN->global_vars['er_developer_toolbar'] = $r;
+      $IN->global_vars['er_developer_toolbar_head'] = "
+   <link rel='stylesheet' href='".$PREFS->core_ini['theme_folder_url']."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />
+";
+      $IN->global_vars['er_developer_toolbar'] = $this->_create_toolbar();
       
    }
    
@@ -260,92 +196,210 @@ class Er_developer_toolbar
     */
    function _create_toolbar()
    {
-      global $DB, $PREFS;
+      global $DB, $PREFS, $SESS, $LANG;
+      
+      define('CP_URL',$PREFS->core_ini['cp_url']);
+
+      $toolbar = '';
+      
+
+      
       
       // Get settings for site and debug and set CSS classes
-      $system_on = ($PREFS->core_ini['is_system_on'] == 'y') ? 'on' : 'off' ;
-      $debug_on = ($PREFS->core_ini['debug'] > 0) ? 'on' : 'off' ;
-      $system_on_class = ($system_on == 'on') ? 'green' : 'red' ;
-      $debug_on_class = ($debug_on == 'on') ? 'green' : 'red' ;
+      $system_status = ($PREFS->core_ini['is_system_on'] == 'y') ? 'on' : 'off' ;
+      $template_debugging = ($PREFS->core_ini['template_debugging'] == 'y') ? 'on' : 'off' ;
+      $show_queries = ($PREFS->core_ini['show_queries'] == 'y') ? 'on' : 'off' ;
       
-      // Begin toolbar by grabbing the CSS settings
-      $toolbar = "<style type='text/css'>
-".$this->settings['css']."
-</style>";
-      
-      // Continue toolbar with the markup
-      $toolbar .= "
-<div id='er_developer_toolbar'>
-
-   <p title='by Erik Reagan' class='toolbar_heading'>Developer Toolbar</p>
-
-   <ul id='toolbar_member_data'>";
-      
-      if ($this->settings['show_user'] == 'yes')
+      // hard coded some language lines because I couldn't get $LANG working...
+      // will check back to fix later
+      switch ($PREFS->core_ini['debug'])
       {
-         $toolbar .= "
-      <li><a title='You are in the {group_title} member group' href='".$PREFS->core_ini['cp_url']."?C=myaccount'>{screen_name}</a> (<a href='".$PREFS->core_ini['cp_url']."?C=logout'>logout</a>)</li>";
-      } else {
-         $toolbar .= "
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=logout'>Logout</a></li>";
+         case '1':
+            $debug_status = 'on';
+            $debug_message = 'PHP/SQL error messages shown only to Super Admins';
+            break;
+            
+         case '2':
+            $debug_status = 'on2';
+            $debug_message = 'PHP/SQL error messages shown to anyone - NOT SECURE';
+            break;
+            
+         default:
+            $debug_status = 'off';
+            $debug_message = 'No PHP/SQL error messages generated';
+            break;
       }
-
+      
+      // Build the toollbar
       $toolbar .= "
+<div id='er_developer_toolbar' class='".$this->settings['position']."'>";
+
+   //    This one isn't quite ready for prime time
+   //    $toolbar .= "
+   // <div class='icon' id='move'></div>";
+   
+      $toolbar .="
+   <p title='ER Developer Toolbar: by Erik Reagan' class='toolbar_heading'>Developer Toolbar</p>
+
+   <div class='divider'></div>      
+
+   <ul>
+      <li>
+         <a class='icon' id='home' title='CP Home' href='".CP_URL."'>CP Home</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Control Panel Home</strong></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      <li>
+         <a class='icon' id='account' title='My Account' href='".CP_URL."?C=myaccount'>My Account</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>My Account</strong></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      <li>
+         <a class='icon' id='logout' title='Logout' href='".CP_URL."?C=logout'>Logout</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Logout</strong></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
    </ul>
 
-   <ul id='toolbar_quick_links'>
-      <li><strong>System Status: </strong><a title='Click to change the system status' href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=general_cfg' class='".$system_on_class."'>".ucfirst($system_on)."</a></li>";
+
+   <div class='divider'></div>
+
+
+   <ul>
+      <li>
+         <a class='icon' id='statuses' href='#'>Statuses</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>General Statuses</strong></li>
+               <li class='status_$system_status'><a title='System is ".ucfirst($system_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='system_status'>System Status</a></li>";
       
-      
-      // If we are running with MSM we want to also show if the current Site is on
       if ($PREFS->core_ini['multiple_sites_enabled'] == 'y')
       {
-
-         $site_on = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
-         $site_on_class = ($site_on == 'on') ? 'green' : 'red' ;
-
+         $site_status = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
          $toolbar .= "
-      <li><strong>Site Status: </strong><a title='Click to change the site status' href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=general_cfg' class='".$site_on_class."'>".ucfirst($site_on)."</a></li>";
-      
+               <li class='status_$site_status'><a title='Site is ".ucfirst($site_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='site_status'>Site Status</a></li>";
       }
       
       $toolbar .= "
-      
-      <li><strong>Debug Mode: </strong><a title='Click to change the debug mode' href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=config_mgr&amp;P=output_cfg' class='".$debug_on_class."'>".ucfirst($debug_on)."</a></li>";
-      
+               <li class='status_$debug_status'><a title='".$debug_message."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=output_cfg' id='debug_status'>Debug Status</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      <li>
+         <a class='icon' id='templates' title='Template Manager' href='".CP_URL."?C=templates'>Template Manager</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Template Manager</strong></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      <li>
+         <a class='icon' id='cache' title='Clear Cache' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear Cache</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Clear Cache</strong></li>";
+         //       Not quite ready for prime time
+         //       <li><a href='#'>Page Cache</a></li>
+         //       <li><a href='#'>Tag Cache</a></li>
+         //       <li><a href='#'>Database Cache</a></li>
+         //       <li><a href='#'>SQL Cache</a></li>
+         //       <li><a href='#'>Relationships Cache</a></li>
+         //       <li><a href='#'>All Cache</a></li>
       $toolbar .= "
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear Cache</a></li>";
-      
-      if ($this->settings['show_templates'] == 'yes')
-      {
-         $toolbar .= "
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=templates'>Template Manager</a></li>";
-      }
-      
-      if ($this->settings['show_extensions'] == 'yes')
-      {
-         $toolbar .= "
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=extensions_manager'>Extensions Manager</a></li>";
-      }
-      
-      if ($this->settings['show_plugins'] == 'yes')
-      {
-         $toolbar .= "
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugin Manager</a></li>";
-      }
-      
-      if ($this->settings['show_modules'] == 'yes')
-      {
-         $toolbar .= "
-      <li><a href='".$PREFS->core_ini['cp_url']."?C=modules'>Modules</a></li>";
-      }
-      
-      $toolbar .= "
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
    </ul>
 
-   <ul id='toolbar_calc'>
-      <li title='Elapsed Time' id='toolbar_elapsed_time'>{elapsed_time} seconds</li>
-      <li title='Total Queries' id='toolbar_queries'>{total_queries} queries</li>
+
+   <div class='divider'></div>
+
+
+   <ul>
+      <li>
+         <a class='icon' id='addons' href='#'>Addons</a>
+         <div class='sub visible'>
+            <ul>
+               <li><strong>Add-ons</strong></li>
+               <li><a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a></li>
+               <li><a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a></li>
+               <li><a id='modules' href='".CP_URL."?C=modules'>Modules</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      <li>
+         <a class='icon' id='temp_debug' href='#'>Template Debugging</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Template Debugging</strong></li>
+               <li class='status_".$template_debugging."'><a href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=output_cfg'>Currently ".ucfirst($template_debugging)."</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      <li>
+         <a class='icon' id='sql' href=''>Display SQL Queries</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Display SQL Queries</strong></li>
+               <li class='status_".$show_queries."'><a href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=output_cfg'>Currently ".ucfirst($show_queries)."</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+   </ul>
+
+
+   <div class='divider'></div>
+
+";
+
+   // Not quite ready for prime time either...
+   // <ul>
+   //    <li>
+   //       <a class='icon' id='edit' title='Edit Options' href='#'>Edit Options</a>
+   //       <div class='sub'>
+   //          <ul>
+   //             <li><strong>Edit Options</strong></li>
+   //             <li><a class='entry' href='#'>Edit <em>Lorem ipsum dolor sit</em></a></li>
+   //             <li><a class='template' href='#'>Edit embeds/.masthead</a></li>
+   //             <li><a class='template' href='#'>Edit site/index</a></li>
+   //             <li><a class='template' href='#'>Edit embeds/.footer</a></li>
+   //          </ul>
+   //          <span class='arrow'></span>
+   //       </div>
+   //    </li>
+   // </ul>
+
+      $toolbar .= "
+   <ul id='clock'>
+      <li>
+         <a class='icon' id='utility' title='Good to Know' hred='#'>Good to Know</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Good to Know</strong></li>
+               <li title='Elapsed Time' id='toolbar_elapsed_time'>{elapsed_time} seconds</li>
+               <li title='Total Queries' id='toolbar_queries'>{total_queries} queries</li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
    </ul>
 
 </div>\n\n";

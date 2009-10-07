@@ -18,25 +18,11 @@ $L = array(
 'groups' =>
 'Select one or more member groups for which the developer toolbar will be available',
 
-'css' =>
-'You can customize the CSS for the toolbar if you prefer to match it better to the style of your site',
+'position' =>
+'Choose the position of the bar within the browser window',
 
-'show_user' =>
-'Show current username with link to "My Account" page?',
-
-'show_templates' =>
-'Show link to Templates Manager?',
-
-'show_extensions' =>
-'Show link to Extensions Manager?',
-
-'show_plugins' =>
-'Show link to Plugin Manager?',
-
-'show_modules' =>
-'Show link to Modules?',
-
-
+'debug_1' =>
+'PHP/SQL error messages shown only to Super Admins',
 
 
 

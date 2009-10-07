@@ -209,6 +209,61 @@ class Er_developer_toolbar
    
    
    /**
+    * Create extensions sub-menu
+    * 
+    * @access Private
+    * @return string
+    */
+   function _create_ext_menu()
+   {
+      global $DB;
+      
+      $ext_menu = '';
+      
+      $enabled_extensions_results = $DB->query("SELECT class,settings,enabled FROM exp_extensions WHERE enabled = 'y' GROUP BY class");
+
+      if ($enabled_extensions_results->num_rows == 0)
+      {
+         return $ext_menu;
+      } else {
+         
+          foreach($enabled_extensions_results->result as $row)
+          {
+             $settings_exist = ($row['settings'] == '') ? 'n' : 'y' ;
+             $enabled_extensions[] = array('class' => $row['class'], 'settings' => $settings_exist);
+          }
+      }
+
+      // Start sub-menu
+      $ext_menu .= "<div class='sub2'>
+         <ul>
+            <li><strong>Settings</strong></li>
+            ";
+
+      foreach ($enabled_extensions as $ext) {
+         if ($ext['settings'] == 'y')
+         {
+            $name = ucwords(str_replace('_',' ',str_replace('_ext','',$ext['class'])));
+            
+            $ext_menu .= "<li><a href='".CP_URL."?C=admin&M=utilities&P=extension_settings&name=".$ext['class']."'>$name</a></li>\n";
+         }
+      }
+
+      // Close sub-menu ul and div
+      $ext_menu .= "
+         </ul>
+         <span class='arrow'></span>
+      </div>
+";
+
+      return $ext_menu;
+      
+   }
+   
+   
+   
+   
+   /**
     * Create Developer toolbar
     * 
     * @access Private
@@ -216,10 +271,10 @@ class Er_developer_toolbar
     */
    function _create_toolbar($user_access)
    {
-      global $DB, $PREFS, $SESS;
+      global $DB, $PREFS;
       
       define('CP_URL',$PREFS->core_ini['cp_url']);
-
+      
       $toolbar = '';
       
       // Get settings for site and debug and set CSS classes
@@ -393,7 +448,13 @@ class Er_developer_toolbar
       if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y'))
       {
          $toolbar .= "
-               <li><a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a></li>
+               <li>
+                  <a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a>
+";
+         $toolbar .= $this->_create_ext_menu();
+
+         $toolbar .="
+               </li>
                <li><a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a></li>";
       }
       
@@ -472,8 +533,8 @@ class Er_developer_toolbar
          <div class='sub'>
             <ul>
                <li><strong>Good to Know</strong></li>
-               <li title='Total Queries' id='toolbar_queries'>{total_queries} queries</li>
                <li title='Elapsed Time' id='toolbar_elapsed_time'>{elapsed_time} seconds</li>
+               <li title='Total Queries' id='toolbar_queries'>{total_queries} queries executed</li>
             </ul>
             <span class='arrow'></span>
          </div>

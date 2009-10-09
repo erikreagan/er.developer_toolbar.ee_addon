@@ -108,7 +108,8 @@ class Er_developer_toolbar
       // Local storage for our settings
 		$s = $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
 
-      
+      // Get my gravatar
+      $grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5(strtolower('erik@erikreagan.com'))."&amp;default=".urlencode('http://erikreagan.com/gravatar.jpg')."&amp;size=70";
       
       // Grab the member groups from our current site
       $member_groups = $DB->query("SELECT group_id,site_id,group_title FROM exp_member_groups WHERE `site_id` = " . $PREFS->ini("site_id"));
@@ -145,17 +146,40 @@ class Er_developer_toolbar
                toolbar.animate({top: "-40px"});
             }
          }
+         function updateValue(element,property,input)
+         {
+            if ($(input).attr("value") == "" ) return
+            var toolbar = "#er_developer_toolbar";
+            $(toolbar+" "+element).css(property,$(input).attr("value"));
+            if ($(toolbar).css("top") == "-40px")
+            {
+               $("#preview_toolbar").text("Hide Custom Branded Toolbar");
+               $(toolbar).animate({top:"0px"});
+            }
+         }
       </script>
       <style type="text/css">
       .abox { width: 48%; float: left; }
       .abox.left { margin-right: 4%; }
       .right { float: right; }
       .centered { margin: 0 auto; text-align: center; }
+      .submit {
+         background: #6D942C;
+         color: #fff;
+         border: 1px solid #fff;
+         padding: 4px 15px;
+         font-size: 12pt;
+         display: block;
+         margin: 0 auto;
+         -moz-border-radius: 9px;
+         -webkit-border-radius: 9px;
+      }
       #er_developer_toolbar {
          position: fixed;
          top: -40px;
-         width: 96%;
-         left: 2%;
+         width: 90%;
+         left: 4%;
+         padding: 5px 1% 5px;
          background: #d8dbe5;
          color: #000;
          border: 1px solid #434343;
@@ -167,7 +191,7 @@ class Er_developer_toolbar
       }
       a:active { outline: none; }
       a:focus { -moz-outline-style: none; }
-      #er_developer_toolbar p, #er_developer_toolbar strong { padding: 7px; font-size: 10pt; }
+      #er_developer_toolbar p, #er_developer_toolbar strong { font-size: 10pt; }
       #er_developer_toolbar .link { color: #0f2f5b; }
       </style>
 ';
@@ -178,11 +202,17 @@ class Er_developer_toolbar
 		   <p><strong>Color Previews</strong>: This is the standard text color&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span class="link">This is the linked text color</span></p>
 		</div>
 		
-		<h1>'.$this->name.' &nbsp;&nbsp;<small>'.$this->version.'</small></h1><br/>
-		
 ';
-      
-      
+		
+		$b .= $DSP->div('box')
+		   . '<div style="width:auto;overflow:auto;">
+               <img src="'.$grav_url.'" alt="Erik Reagan" style="border: 1px solid #555;padding: 1px;float:right;"/>'
+               . $DSP->heading($LANG->line('toolbar_name') . " &nbsp;&nbsp;<small>{$this->version}</small>").'<br/>'
+               . '<p>by '.$DSP->anchor('http://erikreagan.com','Erik Reagan').' of '.$DSP->anchor('http://idealdesignfirm.com','Ideal Design Firm, LLC').'<br/>
+               Contact me at '. $DSP->mailto('erik@erikreagan.com','erik@erikreagan.com').'</p>'
+         . '</div>'
+		   . $DSP->div_c();
+		      
       // Start the settings form
       $b .= $DSP->form_open(
                array(
@@ -193,7 +223,8 @@ class Er_developer_toolbar
                   )
             );
             
-      
+      // container for left and right panes
+      $b .= '<div style="overflow:auto;margin-bottom:20px">';
       
       // Create the left pane
       $b .= $DSP->div('abox left','left');
@@ -202,6 +233,11 @@ class Er_developer_toolbar
 			. $DSP->td('tableHeading', '', '2')
          . $LANG->line('general_settings')
 			. $DSP->td_c()
+			. $DSP->tr()
+			. $DSP->td('','','2')
+			. "<div style='background:#FCFCE1;border-width:0 0 2px 0; margin:0; padding:8px 5px 7px 5px'><p style='font-size:12px;'>".$LANG->line('settings_instructions')."</p></div>"
+			. $DSP->td_c()
+			. $DSP->tr_c()
 			. $DSP->tr()
          . $DSP->td('tableCellOne', '', '1')
          . $LANG->line('groups')
@@ -311,7 +347,7 @@ class Er_developer_toolbar
          . $LANG->line('background_color')
          . $DSP->td_c()
          . $DSP->td('tableCellTwo', '', '1')
-         . $DSP->input_text('background_color',$s['background_color'],'','16','right','250px','',FALSE)
+         . $DSP->input_text('background_color',$s['background_color'],'','16','right','250px','onblur=updateValue("",\'background-color\',this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
          
@@ -320,7 +356,7 @@ class Er_developer_toolbar
          . $LANG->line('border_color')
          . $DSP->td_c()
          . $DSP->td('tableCellOne', '', '1')
-         . $DSP->input_text('border_color',$s['border_color'],'','16','right','250px','',FALSE)
+         . $DSP->input_text('border_color',$s['border_color'],'','16','right','250px','onblur=updateValue("",\'border-color\',this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
          
@@ -329,7 +365,7 @@ class Er_developer_toolbar
          . $LANG->line('font_color')
          . $DSP->td_c()
          . $DSP->td('tableCellTwo', '', '1')
-         . $DSP->input_text('font_color',$s['font_color'],'','16','right','250px','',FALSE)
+         . $DSP->input_text('font_color',$s['font_color'],'','16','right','250px','onblur=updateValue("p",\'color\',this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
          
@@ -338,7 +374,7 @@ class Er_developer_toolbar
          . $LANG->line('link_color')
          . $DSP->td_c()
          . $DSP->td('tableCellOne', '', '1')
-         . $DSP->input_text('link_color',$s['link_color'],'','16','right','250px','',FALSE)
+         . $DSP->input_text('link_color',$s['link_color'],'','16','right','250px','onblur=updateValue(".link",\'color\',this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
 
@@ -346,14 +382,35 @@ class Er_developer_toolbar
          
       $b .= $DSP->table_close()
       . $DSP->div('box','center')
-      . $DSP->anchor('#','Preview Custom Branded Toolbar','onclick="toggleToolbar()" id="preview_toolbar"','')
+      . $DSP->anchor('#','Preview Custom Branded Toolbar','onclick="toggleToolbar();return false;" id="preview_toolbar"','')
       . $DSP->div_c();
       $b .= $DSP->div_c();
+      
+      // Close container div
+      $b .= '</div>';
       
       $b .= $DSP->input_submit('Save Settings','submit');
       
       $b .= $DSP->form_close();
       
+      $b .= $DSP->table_open(array('class' => 'tableBorder', 'border' => '0', 'style' => 'margin-top:20px;width: 100%'));
+      $b .= $DSP->tr()
+         . $DSP->td('tableHeading','2')
+         . $LANG->line('extension_credits')
+         . $DSP->td_c()
+         . $DSP->tr_c()
+         . $DSP->tr()
+         . $DSP->td('tableHeadingAlt','2')
+         . $LANG->line('icons')
+         . $DSP->td_c()
+         . $DSP->tr_c()
+         . $DSP->tr()
+         . $DSP->td('tableCellTwo','2')
+         . '<img src="'.str_replace($_SERVER['DOCUMENT_ROOT'],'',PATH_THEMES).'toolbar/creative-commons.png" style="float:left;margin:6px 14px 0 5px" />'
+         . $LANG->line('icon_credits')
+         . $DSP->td_c()
+         . $DSP->tr_c()
+         . $DSP->table_c();
       
       $DSP->set_return_data($LANG->line('toolbar_name').' | '.$LANG->line('extension_settings'),$b,$LANG->line('toolbar_name'));
       $DSP->right_crumb('Documentation','http://erikreagan.com/');
@@ -519,13 +576,7 @@ class Er_developer_toolbar
 		}
       
       $IN->global_vars['er_developer_toolbar_head'] = "
-   <link rel='stylesheet' href='".$PREFS->core_ini['theme_folder_url']."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />";
-   
-      // $background_color
-      // $border_color
-      // $font_color
-      // $link_color
-      
+   <link rel='stylesheet' href='".$PREFS->core_ini['theme_folder_url']."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />";      
       
       if (($this->settings['background_color'] != '') || ($this->settings['border_color']) || ($this->settings['font_color']) || ($this->settings['link_color']))
       {
@@ -544,7 +595,11 @@ class Er_developer_toolbar
             $IN->global_vars['er_developer_toolbar_head'] .= "
       #er_developer_toolbar,
       #er_developer_toolbar ul > li:hover div.sub ul
-         { border-color: ".$this->settings['border_color']." !important; }";
+      { border-color: ".$this->settings['border_color']." !important; }
+      #er_developer_toolbar.hor .divider {
+      width: 1px;height: 24px;margin: 0 10px;background:none;border-left: 1px solid ".$this->settings['border_color']." }
+      #er_developer_toolbar.vert .divider {
+      width: 24px;height: 1px;margin: 10px 0;background:none;border-top: 1px solid ".$this->settings['border_color']." }";
          }
          if ($this->settings['font_color'] != '')
          {
@@ -823,7 +878,7 @@ class Er_developer_toolbar
       {
          $toolbar .="
                <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=mbr_group_manager'>Member Groups</a></li>
-               <li><a href='".CP_URL."?C=myaccount'>Member List</a></li>";
+               <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=view_members'>Member List</a></li>";
       }
       
       

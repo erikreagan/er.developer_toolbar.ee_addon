@@ -23,6 +23,9 @@ $L = array(
 'default_tooltip' =>
 'ER Developer Toolbar: by Erik Reagan',
 
+'settings_instructions' =>
+'Customize general toolbar settings below. Use the settings to the right if you would prefer the toolbar better match your own brand. Color codes can be hexadecimal, verbal, or RGB. You can preview the toolbar before saving it by using the Preview button below the options.',
+
 
 
 /**
@@ -44,6 +47,16 @@ $L = array(
 'check_for_extension_updates' =>
 'Would you like this extension to check for updates and display them on your CP homepage?',
 
+'extension_credits' =>
+'Extension Credits',
+
+'icons' =>
+'Toolbar Icons are from a fantastic free icon set',
+
+'icon_credits' =>
+'<em>Fugue</em> icon set by Yusuke Kamiyamane, <a href="http://www.pinvoke.com/">pinvoke.com</a><br/>The icons are licensed under a Creative Commons Attribution 3.0 license. Used with permission.',
+
+
 
 
 /**
@@ -54,10 +67,10 @@ $L = array(
 'Branding the Toolbar',
 
 'horizontal_logo' =>
-'File path for logo in horizontal toolbar',
+'File path for logo in <strong style="text-decoration:underline">horizontal</strong> toolbar',
 
 'vertical_logo' =>
-'File path for logo in vertical toolbar',
+'File path for logo in <strong style="text-decoration:underline">vertical</strong> toolbar',
 
 'tooltip_text' =>
 'Enter text for tooltip on logo',

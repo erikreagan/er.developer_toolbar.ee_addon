@@ -1,7 +1,7 @@
 /*******************************
     ER Developer Toolbar CSS
 *******************************/
- #er_developer_toolbar {
+#er_developer_toolbar {
 position: fixed;
 display: block;
 z-index: 9999999999;
@@ -22,6 +22,9 @@ outline: none;
 }
 #er_developer_toolbar a:focus {
 -moz-outline-style: none;
+}
+#er_developer_toolbar a.no_link {
+cursor: default;
 }
 #er_developer_toolbar p.toolbar_heading {
 display: block;
@@ -114,7 +117,12 @@ display: none;
 #er_developer_toolbar ul > li:hover div.sub {
 display: block;
 position: absolute;
-width: 250px;
+width: 180px;
+padding: 20px;
+}
+#er_developer_toolbar ul > li:hover div.sub li > .sub2 {
+width: 200px;
+padding: 20px;
 }
 #er_developer_toolbar ul > li:hover div.sub strong {
 border-bottom: 1px solid #888;
@@ -131,10 +139,7 @@ padding: 8px 24px 8px 14px;
 #er_developer_toolbar ul > li > ul li {
 float: none;
 }
-#er_developer_toolbar ul#toolbar_calc {
-list-style: none;
-font-size: 11px;
-}
+#er_developer_toolbar ul > li:hover a#edit + div.sub { width: 250px; }
 /*******************************
 Top Aligned
 ******************************/
@@ -162,10 +167,10 @@ top: 4px;
 left: 15px;
 }
 #er_developer_toolbar.top ul > li > div.sub li:hover > .sub2 {
-top: -10px;
+top: -33px;;
 }
 #er_developer_toolbar.top ul > li > div.sub li:hover > .sub2 span.arrow {
-top: 13px;
+top: 33px;
 }
 /*******************************
 Bottom Aligned
@@ -181,7 +186,6 @@ border-bottom: none;
 }
 #er_developer_toolbar.bot ul > li:hover div.sub {
 bottom: 21px;
-left: -10px;
 padding-bottom: 12px;
 }
 #er_developer_toolbar.bot span.arrow {
@@ -194,10 +198,10 @@ bottom: 4px;
 left: 15px;
 }
 #er_developer_toolbar.bot ul > li > div.sub li:hover > .sub2 {
-bottom: -10px;
+bottom: -30px;
 }
 #er_developer_toolbar.bot ul > li > div.sub li:hover > .sub2 span.arrow {
-bottom: 13px;
+bottom: 33px;
 }
 /*******************************
 Horizontal (top and bottom)
@@ -213,7 +217,7 @@ width: 101px;
 height: 24px;
 background: url(sprite.png) 0px -24px no-repeat;
 }
-#er_developer_toolbar.hor ul {
+#er_developer_toolbar.hor > ul {
 float: left;
 }
 #er_developer_toolbar.hor > ul > li {
@@ -227,6 +231,12 @@ height: 24px;
 margin: 0 10px;
 background: url(sprite.png) -100px -24px no-repeat;
 }
+#er_developer_toolbar.hor ul > li:hover div.sub {
+left: -30px;
+}
+#er_developer_toolbar.hor span.arrow {
+left: 35px;
+}
 #er_developer_toolbar.hor ul#toolbar_member_data li {
 float: left;
 margin-right: 20px;
@@ -239,21 +249,22 @@ float: left;
 margin-left: 20px;
 }
 #er_developer_toolbar.hor ul#clock {
-float: right;
+position: absolute;
+right: 1%;
 }
 #er_developer_toolbar.hor ul#clock > li:hover div.sub {
-left: -87px;
+position: absolute;
+left: -162px;
 text-align: right;
 }
 #er_developer_toolbar.hor ul#clock span.arrow {
-left: 91px;
+left: 146px;
 }
 #er_developer_toolbar.hor ul > li > div.sub li:hover > .sub2 {
 display: block;
 position: absolute;
-padding-left: 27px;
-width: 250px;
-left: 60px;
+padding-left: 47px;
+left: 121px;
 }
 #er_developer_toolbar.hor ul > li > div.sub li:hover > .sub2 span.arrow {
 display: block;
@@ -261,7 +272,7 @@ width: 10px;
 height: 17px;
 background: url(sprite.png) -173px -27px no-repeat;
 position: absolute;
-left: 19px;
+left: 39px;
 }
 /*******************************
 Left Aligned
@@ -313,7 +324,6 @@ border-right: none;
 }
 #er_developer_toolbar.right ul > li:hover div.sub {
 right: 21px;
-top: -10px;
 padding-right: 14px;
 }
 #er_developer_toolbar.right span.arrow {
@@ -323,16 +333,13 @@ height: 17px;
 background: url(sprite.png) -152px -27px no-repeat;
 position: absolute;
 right: 6px;
-top: 15px;
 }
 #er_developer_toolbar.right #clock { right: 4px; }
 #er_developer_toolbar.right ul > li > div.sub li:hover > .sub2 {
-top: -42px;
 padding-right: 19px;
 right: 160px;
 }
 #er_developer_toolbar.right ul > li > div.sub li:hover > .sub2 span.arrow {
-top: 45px;
 background: url(sprite.png) -152px -27px no-repeat !important;
 right: 12px;
 }
@@ -351,6 +358,18 @@ background: url(sprite.png) -233px -31px no-repeat;
 }
 #er_developer_toolbar.vert > ul > li div.sub {
 width: 200px;
+}
+#er_developer_toolbar.vert ul > li:hover div.sub {
+top: -30px;
+}
+#er_developer_toolbar.vert span.arrow {
+top: 35px;
+}
+#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 {
+top: -62px;
+}
+#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 span.arrow {
+top: 65px;
 }
 #er_developer_toolbar.vert .divider {
 display: block;
@@ -373,8 +392,8 @@ position: absolute;
 }
 #er_developer_toolbar.vert #clock { position: absolute; bottom: 1%; }
 #er_developer_toolbar.vert ul#clock > li:hover > div.sub {
-    top: -69px;
+    top: -89px;
 }
 #er_developer_toolbar.vert ul#clock > li:hover > div.sub span.arrow {
-    top: 71px;
+    top: 91px;
 }

@@ -7,7 +7,7 @@
  * /system/extensions/ folder in your ExpressionEngine installation.
  *
  * @package ERDeveloperToolbar
- * @version 0.9.2
+ * @version 1.0.0
  * @author Erik Reagan http://erikreagan.com
  * @copyright Copyright (c) 2009 Erik Reagan
  * @see http://erikreagan.com/projects/er_developer_toolbar/
@@ -23,7 +23,7 @@ class Er_developer_toolbar
    var $settings = array();
 
    var $name = 'ER Developer Toolbar';
-   var $version = '0.9.2';
+   var $version = '1.0.0';
    var $description = 'Adds a developer toolbar as a global variable available within your templates';
    var $settings_exist = 'y';
    var $docs_url = '';
@@ -107,7 +107,7 @@ class Er_developer_toolbar
 
       // Local storage for our settings
 		$s = $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
-
+      $s['check_for_extension_updates'] = (array_key_exists('check_for_extension_updates',$s)) ? $s['check_for_extension_updates'] : '' ;
       // Get my gravatar
       $grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5(strtolower('erik@erikreagan.com'))."&amp;default=".urlencode('http://erikreagan.com/gravatar.jpg')."&amp;size=70";
       
@@ -124,39 +124,64 @@ class Er_developer_toolbar
       // It just looks better...
       $DSP->crumbline = TRUE;
       
+      
+      // a little BK flavor
+      $lgau_query = $DB->query("SELECT class FROM exp_extensions WHERE class = 'Lg_addon_updater_ext' AND enabled = 'y' LIMIT 1");
+		$lgau_enabled = $lgau_query->num_rows ? TRUE : FALSE;
+		$check_for_extension_updates = ($lgau_enabled AND $s['check_for_extension_updates'] == 'y') ? TRUE : FALSE;
+      
+      
       // Start the body content string
       $b = '
       <script type="text/javascript" charset="utf-8">
-         function toggleToolbar()
-         {
-            var toolbar = $("#er_developer_toolbar");
-            var offset = toolbar.css("top");
-            if (offset == "-40px")
-            {
-               $("#er_developer_toolbar").css({"background":$("#background_color").attr("value"),"border-color":$("#border_color").attr("value")});
-               $("#er_developer_toolbar p").css({color:$("#font_color").attr(\'value\')});
-               $("#er_developer_toolbar .link").css({color:$("#link_color").attr(\'value\')});
-               
-               $("#preview_toolbar").text("Hide Custom Branded Toolbar");
-               toolbar.animate({top:"0px"});
-            }
-            else
-            {
-               $("#preview_toolbar").text("Preview Custom Branded Toolbar");
-               toolbar.animate({top: "-40px"});
-            }
-         }
-         function updateValue(element,property,input)
-         {
-            if ($(input).attr("value") == "" ) return
-            var toolbar = "#er_developer_toolbar";
-            $(toolbar+" "+element).css(property,$(input).attr("value"));
-            if ($(toolbar).css("top") == "-40px")
-            {
-               $("#preview_toolbar").text("Hide Custom Branded Toolbar");
-               $(toolbar).animate({top:"0px"});
-            }
-         }
+       function toggleToolbar()
+       {
+          var toolbar = $("#er_developer_toolbar");
+          var offset = toolbar.css("top");
+          if (offset == "-40px")
+          {
+             $("#er_developer_toolbar").css({"background":$("#background_color").attr("value"),"border-color":$("#border_color").attr("value")});
+             $("#er_developer_toolbar p").css({"color":$("#font_color").attr("value")});
+             $("#er_developer_toolbar .link").css({"color":$("#link_color").attr("value")});
+             $("#er_developer_toolbar > .horizontal_logo").css({"background-image":"url("+$("#horizontal_logo").attr("value")+")"});
+             $("#er_developer_toolbar > .vertical_logo").css({"background-image":"url("+$("#vertical_logo").attr("value")+")"});
+
+             $("#preview_toolbar").text("Hide Custom Branded Toolbar");
+             toolbar.animate({top:"0px"});
+          }
+          else
+          {
+             $("#preview_toolbar").text("Preview Custom Branded Toolbar");
+             toolbar.animate({top: "-40px"});
+          }
+       }
+       function updateValue(element,property,input)
+       {
+          var toolbar = "#er_developer_toolbar";
+          if ($(input).attr("value") == $(toolbar+element).css(property) ) return
+          $(toolbar+" "+element).css(property,$(input).attr("value"));
+          if ($(toolbar).css("top") == "-40px")
+          {
+             $("#preview_toolbar").text("Hide Custom Branded Toolbar");
+             $(toolbar).animate({top:"0px"});
+          }
+       }
+       function updateBackground(element,input)
+       {
+          var toolbar = "#er_developer_toolbar";
+          if ($(input).attr("value") == $(toolbar+element).css("background-image") ) return
+          $(toolbar+" "+element).css("background-image","url("+$(input).attr("value")+")");
+          if ($(toolbar).css("top") == "-40px")
+          {
+             $("#preview_toolbar").text("Hide Custom Branded Toolbar");
+             $(toolbar).animate({top:"0px"});
+          }
+       }
+       function changeTooltip(input)
+       {
+          $(".vertical_logo").attr({title: input.value});
+          $(".horizontal_logo").attr({title: input.value});
+       }
       </script>
       <style type="text/css">
       .abox { width: 48%; float: left; }
@@ -189,10 +214,29 @@ class Er_developer_toolbar
          -webkit-border-bottom-left-radius: 5px;
          -webkit-border-bottom-right-radius: 5px;
       }
+      #er_developer_toolbar .horizontal_logo {
+         position: absolute;
+         top: 4px;
+         right: 15px;
+         background-position: 0 0;
+         background-repeat: no-repeat;
+         width: 100px;
+         height: 25px;
+      }
+      #er_developer_toolbar .vertical_logo {
+         position: absolute;
+         top: 5px;
+         right: 130px;
+         background-position: 0 0;
+         background-repeat: no-repeat;
+         width: 25px;
+         height: 25px;
+      }
       a:active { outline: none; }
       a:focus { -moz-outline-style: none; }
       #er_developer_toolbar p, #er_developer_toolbar strong { font-size: 10pt; }
-      #er_developer_toolbar .link { color: #0f2f5b; }
+      #er_developer_toolbar .link { color: #0f2f5b; cursor: pointer; }
+      #er_developer_toolbar .link:hover { text-decoration: underline; }
       </style>
 ';
       
@@ -200,13 +244,15 @@ class Er_developer_toolbar
       $b .= '
 		<div id="er_developer_toolbar">
 		   <p><strong>Color Previews</strong>: This is the standard text color&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<span class="link">This is the linked text color</span></p>
+		   <div class="horizontal_logo" title="ER Developer Toolbar, by Erik Reagan"></div>
+		   <div class="vertical_logo" title="ER Developer Toolbar, by Erik Reagan"></div>
 		</div>
 		
 ';
 		
 		$b .= $DSP->div('box')
 		   . '<div style="width:auto;overflow:auto;">
-               <img src="'.$grav_url.'" alt="Erik Reagan" style="border: 1px solid #555;padding: 1px;float:right;"/>'
+               <img src="'.$grav_url.'" alt="Erik Reagan" height="70" width="70" style="border: 1px solid #555;padding: 1px;float:right;"/>'
                . $DSP->heading($LANG->line('toolbar_name') . " &nbsp;&nbsp;<small>{$this->version}</small>").'<br/>'
                . '<p>by '.$DSP->anchor('http://erikreagan.com','Erik Reagan').' of '.$DSP->anchor('http://idealdesignfirm.com','Ideal Design Firm, LLC').'<br/>
                Contact me at '. $DSP->mailto('erik@erikreagan.com','erik@erikreagan.com').'</p>'
@@ -253,21 +299,8 @@ class Er_developer_toolbar
          . $DSP->td_c();
    
       $b .= $DSP->tr()
-         . $DSP->td('tableCellTwo', '', '1')
-         . $LANG->line('new_window')
-         . $DSP->td_c()
-         . $DSP->td('tableCellTwo', '', '1')
-         . $DSP->input_radio('new_window','1',($s['new_window'] == 1) ? 1 : '' )
-         . $LANG->line('yes')
-         . $DSP->input_radio('new_window','0',($s['new_window'] == 0) ? 1 : '' )
-         . $LANG->line('no')
-         . $DSP->td_c()
-         . $DSP->tr_c();   
-         
-      
-      $b .= $DSP->tr()
          . $DSP->td('tableCellOne', '', '1')
-         . $LANG->line('new_window')
+         . $LANG->line('position')
          . $DSP->td_c()
          . $DSP->td('tableCellOne', '', '1')   
          . $DSP->input_select_header('position','','','250px');
@@ -285,19 +318,34 @@ class Er_developer_toolbar
       $b .= $DSP->input_select_option($css_class, $option_text,$selected);
    }
    
-   $b .= $DSP->input_select_footer()
-      . $DSP->td_c()
-      . $DSP->tr_c();   
-			
+      $b .= $DSP->input_select_footer()
+         . $DSP->td_c()
+         . $DSP->tr_c();   
+
+
+      $b .= $DSP->tr()
+         . $DSP->td('tableCellTwo', '', '1')
+         . $LANG->line('new_window')
+         . $DSP->td_c()
+         . $DSP->td('tableCellTwo', '', '1')
+         . '<select name="new_window">'
+         . $DSP->input_select_option('y', $LANG->line('yes'), ($s['new_window'] == 'y' ? 'y' : ''))
+         . $DSP->input_select_option('n', $LANG->line('no'),  ($s['new_window'] != 'y' ? 'y' : ''))
+         . $DSP->input_select_footer()
+         . $DSP->td_c()
+         . $DSP->tr_c();
+
+
 		$b .= $DSP->tr()
          . $DSP->td('tableCellTwo', '', '1')
          . $LANG->line('check_for_extension_updates')
          . $DSP->td_c()
          . $DSP->td('tableCellTwo', '', '1')
-         . $DSP->input_radio('check_for_extension_updates','1',($s['check_for_extension_updates'] == 1) ? 1 : '' )
-         . $LANG->line('yes')
-         . $DSP->input_radio('check_for_extension_updates','0',($s['check_for_extension_updates'] == 0) ? 1 : '' )
-         . $LANG->line('no')
+         . '<select name="check_for_extension_updates"'.($lgau_enabled ? '' : ' disabled="disabled"').'>'
+         . $DSP->input_select_option('y', $LANG->line('yes'), ($s['check_for_extension_updates'] == 'y' ? 'y' : ''))
+         . $DSP->input_select_option('n', $LANG->line('no'),  ($s['check_for_extension_updates'] != 'y' ? 'y' : ''))
+         . $DSP->input_select_footer()
+         . ($lgau_enabled ? '' : $LANG->line('lgau_required_message'))
          . $DSP->td_c()
          . $DSP->tr_c();
 		
@@ -320,7 +368,7 @@ class Er_developer_toolbar
          . $LANG->line('horizontal_logo')
          . $DSP->td_c()
          . $DSP->td('tableCellOne', '', '1')
-         . $DSP->input_text('horizontal_logo',$s['horizontal_logo'],'','','right','250px','',FALSE)
+         . $DSP->input_text('horizontal_logo',$s['horizontal_logo'],'','','right','250px','onblur=updateBackground(\'.horizontal_logo\',this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
          
@@ -329,7 +377,7 @@ class Er_developer_toolbar
          . $LANG->line('vertical_logo')
          . $DSP->td_c()
          . $DSP->td('tableCellTwo', '', '1')
-         . $DSP->input_text('vertical_logo',$s['vertical_logo'],'','','right','250px','',FALSE)
+         . $DSP->input_text('vertical_logo',$s['vertical_logo'],'','','right','250px','onblur=updateBackground(\'.vertical_logo\',this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
          
@@ -338,7 +386,7 @@ class Er_developer_toolbar
          . $LANG->line('tooltip_text')
          . $DSP->td_c()
          . $DSP->td('tableCellOne', '', '1')
-         . $DSP->input_text('tooltip_text',$s['tooltip_text'],'','','right','250px','',FALSE)
+         . $DSP->input_text('tooltip_text',$s['tooltip_text'],'','','right','250px','onblur=changeTooltip(this)',FALSE)
          . $DSP->td_c()
          . $DSP->tr_c()
          
@@ -458,20 +506,42 @@ class Er_developer_toolbar
    {
       global $DB, $PREFS;
       
+      // Do we create a template group? If so let's to it here...
+      
+      
       // By default we want to restrict the settings to the Super Admin group which is group_id '1'
-      $settings = array(
-         $PREFS->ini('site_id') => array(
+      $default_settings = array(
             'groups'                      => array('1'),
             'new_window'                  => 0,
             'position'                    => 'top hor',
             'tooltip_text'                => '',
-            'check_for_extension_updates' => 1
-            )
+            'check_for_extension_updates' => 1,
+            'horizontal_logo'             => '',
+            'vertical_logo'               => '',
+            'background_color'            => '',
+            'border_color'                => '',
+            'font_color'                  => '',
+            'link_color'                  => ''
          );
+      
+      
+      // MSM: Site speficic settings thanks to LG
+      // get the list of installed sites
+		$query = $DB->query("SELECT * FROM exp_sites");
+
+		// if there are sites - we know there will be at least one but do it anyway
+		if ($query->num_rows > 0)
+		{
+			// for each of the sites
+			foreach($query->result as $row)
+			{
+				// build a multi dimensional array for the settings
+				$settings[$row['site_id']] = $default_settings;
+			}
+		}
       
       $hooks = array(
          'sessions_end'                    => 'sessions_end',
-         'weblog_entries_query_result'     => 'weblog_entries_query_result',
          'lg_addon_update_register_source' => 'lg_addon_update_register_source',
          'lg_addon_update_register_addon'  => 'lg_addon_update_register_addon'
       );
@@ -545,6 +615,8 @@ class Er_developer_toolbar
    function sessions_end( $s )
    {
       global $EXT, $IN, $PREFS;
+      
+      $theme_path = (substr($PREFS->core_ini['theme_folder_url'], strlen($PREFS->core_ini['theme_folder_url']) - 1) != '/') ? $PREFS->core_ini['theme_folder_url'].'/' : $PREFS->core_ini['theme_folder_url'] ;
 
       if ( ! in_array($s->userdata['group_id'], $this->settings['groups']) )
       {
@@ -554,10 +626,6 @@ class Er_developer_toolbar
          return;
       }
 
-
-      // Get developer toolbar info in cache
-      $this->weblog_entries_query_result();
-      
       
       $user_access = array(
          'can_access_cp' => $s->userdata['can_access_cp'],
@@ -576,9 +644,9 @@ class Er_developer_toolbar
 		}
       
       $IN->global_vars['er_developer_toolbar_head'] = "
-   <link rel='stylesheet' href='".$PREFS->core_ini['theme_folder_url']."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />";      
+   <link rel='stylesheet' href='".$theme_path."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />";      
       
-      if (($this->settings['background_color'] != '') || ($this->settings['border_color']) || ($this->settings['font_color']) || ($this->settings['link_color']))
+      if (($this->settings['background_color'] != '') || ($this->settings['border_color'] != '') || ($this->settings['font_color'] != '') || ($this->settings['link_color'] != '') || ($this->settings['vertical_logo'] != '') || ($this->settings['horizontal_logo'] != ''))
       {
          $IN->global_vars['er_developer_toolbar_head'] .= "
    <style type='text/css'>";
@@ -588,7 +656,7 @@ class Er_developer_toolbar
       #er_developer_toolbar,
       #er_developer_toolbar ul > li:hover div.sub ul
       { background-color: ".$this->settings['background_color']."; }
-      #er_developer_toolbar .arrow { display: none !important; }";
+";
          }
          if ($this->settings['border_color'] != '')
          {
@@ -597,9 +665,25 @@ class Er_developer_toolbar
       #er_developer_toolbar ul > li:hover div.sub ul
       { border-color: ".$this->settings['border_color']." !important; }
       #er_developer_toolbar.hor .divider {
-      width: 1px;height: 24px;margin: 0 10px;background:none;border-left: 1px solid ".$this->settings['border_color']." }
+      width: 1px;height: 18px;margin: 3px 10px;background:none;border-left: 1px solid ".$this->settings['border_color']." }
       #er_developer_toolbar.vert .divider {
-      width: 24px;height: 1px;margin: 10px 0;background:none;border-top: 1px solid ".$this->settings['border_color']." }";
+      width: 18px;height: 1px;margin: 10px 3px;background:none;border-top: 1px solid ".$this->settings['border_color']." }";
+         }
+         if (($this->settings['border_color'] != '') || (($this->settings['background_color'] != '')))
+         {
+            $IN->global_vars['er_developer_toolbar_head'] .= "
+      #er_developer_toolbar .arrow { display: none !important; }
+";
+         }
+         if ($this->settings['horizontal_logo'] != '')
+         {
+            $IN->global_vars['er_developer_toolbar_head'] .= "
+      #er_developer_toolbar.hor p.toolbar_heading { background: url(".$this->settings['horizontal_logo'].") 0 0; }";
+         }
+         if ($this->settings['vertical_logo'] != '')
+         {
+            $IN->global_vars['er_developer_toolbar_head'] .= "
+      #er_developer_toolbar.vert p.toolbar_heading { background: url(".$this->settings['vertical_logo'].") 0 0; }";
          }
          if ($this->settings['font_color'] != '')
          {
@@ -617,82 +701,28 @@ class Er_developer_toolbar
    
    
       $IN->global_vars['er_developer_toolbar_head'] .= "
-   <script src='".$PREFS->core_ini['theme_folder_url']."toolbar/scripts.js' type='text/javascript' charset='utf-8'></script>";
-   
-      if ($this->settings['new_window'] == 1)
+   <script src='".$theme_path."toolbar/jqcheck.js' type='text/javascript' charset='utf-8'></script>
+   <script src='".$theme_path."toolbar/general.js' type='text/javascript' charset='utf-8'></script>";
+      
+      if ($this->settings['new_window'] == 'y')
       {
          $IN->global_vars['er_developer_toolbar_head'] .= "
-   <script type='text/javascript' charset='utf-8'>
-      jQuery.noConflict();
-      jQuery(document).ready(function(){
-         jQuery('#er_developer_toolbar a').attr('target','_blank');      
+   <script tyle='text/javascript' charset='utf-8'>
+      $(document).ready(function(){
+         jQuery('#er_developer_toolbar a').attr('target','_blank');
+         jQuery('#er_developer_toolbar a.self').attr('target','');
       });
    </script>
 ";
-      }      
+      }
+      
 
       $IN->global_vars['er_developer_toolbar'] = $this->_create_toolbar($user_access);
       
    }
    
    
-   
-   function weblog_entries_query_result( $w = '', $q = '' )
-   {
-      global $EXT, $SESS;
-      
-      
-      
-      if ($EXT->last_call !== FALSE)
-      {
-         $q = $EXT->last_call;
-      }
-
-      return $q;
-
-   }
-   
-   
-   
-   function _build_entries_list()
-   {
-      global $SESS;
-      
-      $entries_list = '';
-      
-      $current_entries = $this->weblog_entries_query_result();
-      
-      if(isset($SESS->cache['dev_toolbar']) === FALSE)
-		{
-			$SESS->cache['dev_toolbar'] = array();
-		}
-		if (is_array($current_entries))
-		{
-		   
-   		foreach ($current_entries as $entry)
-   		{
-            // C=edit&M=edit_entry&weblog_id=2&entry_id=8
-
-            // $entries_menu .= "<li><a href='".CP_URL."?C=edit&amp;M=edit_entry&amp;weblog_id=".$entry['weblog_id']."&amp;entry_id=".$entry['entry_id']."'>".$entry['title']."</a></li>\n";
-         
-            $SESS->cache['dev_toolbar']['entries'][] = array(
-               'title' => $entry['title'],
-               'entry_id' => $entry['entry_id'],
-               'weblog_id' => $entry['weblog_id']
-               );
-         }
-      }
-      
-      // echo "<pre>";
-      // print_r($SESS);
-      // echo "</pre>";
-      // exit;
-            
-   }
-   
-   
-   
-   
+     
    /**
     * Create extensions sub-menu
     * 
@@ -722,7 +752,7 @@ class Er_developer_toolbar
       // Start sub-menu
       $ext_menu .= "<div class='sub2'>
          <ul>
-            <li><strong>Settings</strong></li>
+            <li><strong>Extension Settings</strong></li>
             ";
 
       foreach ($enabled_extensions as $ext) {
@@ -730,7 +760,7 @@ class Er_developer_toolbar
          {
             $name = ucwords(str_replace('_',' ',str_replace('_ext','',$ext['class'])));
             
-            $ext_menu .= "<li><a href='".CP_URL."?C=admin&M=utilities&P=extension_settings&name=".$ext['class']."'>$name</a></li>\n";
+            $ext_menu .= "<li><a href='".CP_URL."?C=admin&M=utilities&P=extension_settings&name=".strtolower($ext['class'])."'>$name</a></li>\n";
          }
       }
 
@@ -767,7 +797,7 @@ class Er_developer_toolbar
       // Start sub-menu
       $pi_menu .= "<div class='sub2'>
          <ul>
-            <li><strong>Usage Docs</strong></li>
+            <li><strong>Plugin Usage</strong></li>
             ";
 
       foreach ($pi_files as $pi) {
@@ -859,10 +889,12 @@ class Er_developer_toolbar
       {
          $toolbar .= "
       <li>
-         <a class='icon' id='home' href='".CP_URL."'>CP Home</a>
+         <a class='icon no_link' id='home' href='#'>CP Home</a>
          <div class='sub'>
             <ul>
-               <li><strong>Control Panel Home</strong></li>
+               <li><strong>Home Page</strong></li>
+               <li><a class='self' href='{site_url}'>{site_name} Home Page</a></li>
+               <li><a href='".CP_URL."'>Control Panel Home Page</a></li>
             </ul>
             <span class='arrow'></span>
          </div>
@@ -891,10 +923,11 @@ class Er_developer_toolbar
       
       $toolbar .= "
       <li>
-         <a class='icon' id='logout' href='".CP_URL."?C=logout'>Logout</a>
+         <a class='icon no_link' id='logout' href='#'>Logout</a>
          <div class='sub'>
             <ul>
                <li><strong>Logout</strong></li>
+               <li><a href='".CP_URL."?C=logout'>Logout as {username}</a></li>
             </ul>
             <span class='arrow'></span>
          </div>
@@ -960,7 +993,8 @@ class Er_developer_toolbar
          <a class='icon no_link' id='cache' href='#'>Clear Cache</a>
          <div class='sub'>
             <ul>
-               <li><strong>Clear Cache</strong></li>";
+               <li><strong>Clear Cache</strong></li>
+               <li><a href='".CP_URL."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear all Cache</a></li>";
                
          // Not quite ready for prime time            
          // $toolbar .= "
@@ -1065,39 +1099,10 @@ class Er_developer_toolbar
    </ul>";
       }
 
-
-      $toolbar .= "
-   <div class='divider'></div>
-   
-   
-   <ul>
-      <li>
-         <a class='icon' id='edit' href='#'>Edit Options</a>
-         <div class='sub'>
-            <ul>
-               <li><strong>Edit Options</strong></li>
-               <li><a class='entry' href='#'>Edit <em>Lorem ipsum dolor sit</em></a></li>";
-               
-      if ( ($user_access['can_access_cp'] == 'y') && ($user_access['can_access_design'] == 'y') && (file_exists(PATH_PI.'pi.lg_template_info.php')) )
-      { 
-         // C=templates&M=edit_template&id=17&tgpref=3
-         $toolbar .= "
-               <li><a class='template' href='".CP_URL."?C=templates&amp;M=edit_template&amp;id={exp:lg_template_info attribute='template_id'}&amp;tgpref={exp:lg_template_info attribute='template_group_id'}'>Edit {exp:lg_template_info attribute='template_group_name'}/{exp:lg_template_info attribute='template_name'}</a></li>";
-      }
-      
-      $toolbar .= $this->_build_entries_list();
-      
-      $toolbar .= "
-            </ul>
-            <span class='arrow'></span>
-         </div>
-      </li>
-   </ul>";
-
       $toolbar .= "
    <ul id='clock'>
       <li>
-         <a class='icon' id='utility' href='#'>Good to Know</a>
+         <a class='icon no_link' id='utility' href='#'>Good to Know</a>
          <div class='sub'>
             <ul>
                <li><strong>Good to Know</strong></li>
@@ -1114,25 +1119,6 @@ class Er_developer_toolbar
       return $toolbar;
       
    }
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    
    

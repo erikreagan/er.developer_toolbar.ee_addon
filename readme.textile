@@ -1,55 +1,84 @@
 h1. ER Developer Toolbar
 
-ExpressionEngine extension that adds a developer toolbar as a global variable.
-
-h2. About the Extension
-
-After about my 3rd or 4th EE website creation I decided it would be worth while to create an embed template that gave me links to CP functions I frequently went to during the development process. Particularly I wanted to have links to these functions straight from the front-end of my sites. The template included links to clearing cache, extensions, general system settings etc. I ended up using this embed template with every site so I decided to turn it into an extension. I also included an EE Insider tip from Jason Morehead regarding the inclusion of a <a href="http://eeinsider.com/tips/view/create-a-performance-indicator/">performance indicator</a>. Thanks Jason!
-
-In its current state, it is nothing but a toolbar fixed at the top of your window with the logged member name, some quick links and the elapsed time and total query count. I'm sure it will grow as others use it so please send any suggestions my way to erik {at} erikreagan {.} com.
+ExpressionEngine extension that makes a toolbar available to the front end of a website via global variables. Its purpose is to minimize the number of clicks it takes to make changes between the front-end and the back-end of an EE site. By <a href="http://erikreagan.com">Erik Reagan</a>.
 
 h2. Instructions
 
 * Place ext.er_developer_toolbar.php in your system/extensions directory
 * Place lang.er_developer_toolbar.php in your system/language/english directory
+* Place the toolbar directory in your themes directory (should be themes/toolbar)
 * Enable the extension in your Extensions Manager
-* Place the global variable <code>{er_developer_toolbar}</code> in one of your templates. I put it right before my <code></body></code> tag.
+* Place the following code in the <code><head></code> of your site:
+   <code>{if er_developer_toolbar_head}{er_developer_toolbar_head}{/if}</code>
+* Place the following code in the <code><body></code> of your site:
+   <code>{if er_developer_toolbar}{er_developer_toolbar}{/if}</code>
+   I put it right before my <code></body></code> tag.
 * Browse your site with quick details and links at your finger tips!
 
-h2. Configuration
+*Important Caching Notice*
+
+If your site uses page (template) caching you will need to use embed templates that are not cached. In this case you would place the code above in individual templates (probably under their own template group) to be embedded and then use these in your <code><head></code> and <code><body></code> respectively:
+
+<pre><code>{embed="er_developer_toolbar/.toolbar_head"}
+
+{embed="er_developer_toolbar/.toolbar"}
+</code></pre>
+
+The names of the templates and template group above are examples. If you are using an MSM setup keep in mind that you only need to do this with one site. You can embed templates across any of your MSM sites. See ExpressionEngine documentation for <a href="http://expressionengine.com/docs/cp/sites/code.html#embedding">MSM</a>.
+
+
+h2. General Settings
 
 *Member Groups*
+The first and most important option with ER Developer Toolbar is which member groups can see the toolbar. Each link in the toolbar checks for permissions before being created so you can show this toolbar to other members who may not have the same access as you and they will simply not what links are not being displayed. Everyone sees the performance indicators by default (time & queries)
 
-By default this extension only parses the global variable for Super Admins. You can, however, select the member groups you want to see this in the Settings of this extension. Keep in mind that the toolbar is the same for everyone regardless of their access around the CP. So if you have a member group that can't see Modules but you have them selected in this extension, they will still be linked to the page (on which they will receive an access privileges message).
+*Toolbar Position*
+The toolbar can be positioned on any edge of the browser widow. When enabled it will be fixed to the top edge of the browser but you can change that under the Extension Settings.
 
-*Quick Links*
+*Link Target*
+This toolbar is designed to minimize clicks between the front end and back end while working on the EE site. Personally I like settings the toolbar links to open in a new window so that I just make the change in the CP that I need, then close the window/tab and refresh my front end (as opposed to having to use the back button in the same window/tab). By default the toolbar will open links in the same window but you can change this to open in new windows in the settings.
 
-You have the option of enabling or disabling the inclusion of links to the following areas of the CP:
+*LG Addon Updater*
+This extension can call home and check for updates if you have <a href="http://leevigraham.com/cms-customisation/expressionengine/lg-addon-updater/">LG Addon Updater</a> installed.
 
-* My Account (enabled by default)
-* Templates (+disabled+ by default)
-* Extensions Manager (enabled by default)
-* Plugin Manager (enabled by default)
-* Modules (+disabled+ by default)
+h2. Branding the Toolbar
 
-*CSS*
+As a developer who works with clients all the time, I love brandable tools. There certain pieces of this toolbar that I would enable to my clients so I thought you might as well. Because of this I wanted to enable you to brand this toolbar on a per-site basis. You can preview the toolbar (in basic form) from within the extension settings so you do not have to save the settings to see how it looks. I have also included a layered Photoshop file to help you get the logos together along with the colors (resources/toolbar_brand.psd). Here's the what and the how:
 
-You may modify the CSS as you like if you prefer it to match your site design. You can be as creative as you would like, moving it anywhere around the screen. It just depends on where in your template you insert the <code>{er_developer_toolbar}</code> global variable and how you format your CSS.
+*Horizontal Logo*
 
-h2. MSM Compatibility
+The horizontal logo dimensions are 100x25 and you can replace it with the path to your logo here. Either use a transparent PNG or a background color the same as your toolbar background color.
 
-If you are using MSM the toolbar will display one additional setting/link and that is whether or not the current Site is on. Keep in mind, however, that the extension settings are the same across all sites in an MSM setup so you cannot customize the CSS on a per-site basis (yet).
+*Vertical Logo*
 
+The vertical logo dimensions are 25x25 and you can replace it with the path to your logo here. Either use a transparent PNG or a background color the same as your toolbar background color.
 
-h2. Change Log
+*Tooltip*
 
-*+Oct 4, 2009: 0.5.1+*
+This is the text that appears when the cursor is over the logo
 
-* Added settings for 5 of the quick links for more fine-tuning via the CP
-* Corrected a few typos in readme
-* Adjusted some default CSS settings
-* Added a logout link in place of member group
+*Background Color*
 
-*Oct 3, 2009: 0.5.0*
+This will be the background color of the toolbar and the multi-layer menus. When changing the background color the arrows from the popups disappear simply because they were graphics and would no long match the background color. You lose no functionality however. The color can be in any CSS-accepted format (eg: red, #f00, #ff0000, rgb(255,0,0) all produce the same color).
 
-* Initial Release
+*Border Color*
+
+This will be the border color of the toolbar, multi-layer menus, and dividers between toolbar sections. The color can be in any CSS-accepted format (eg: red, #f00, #ff0000, rgb(255,0,0) all produce the same color).
+
+*Font Color*
+
+This changes the font color of non-linked text within the toolbar. The color can be in any CSS-accepted format (eg: red, #f00, #ff0000, rgb(255,0,0) all produce the same color).
+
+*Link Color*
+
+This changes the color of links in the toolbar. The :hover state will also be this color. The color can be in any CSS-accepted format (eg: red, #f00, #ff0000, rgb(255,0,0) all produce the same color).
+
+*Special Notes*
+
+Again, branding the toolbar is per-site with MSM. When you tab out of any branding text field the toolbar will automatically display if it is not already displayed. This helps you get the toolbar looking perfect before saving the settings.
+
+h2. Credits
+
+*Icons*
+
+The icons used in the toolbar are from the icon set _Fugue_ by Yusuke Kamiyamane of <a href="http://pinvoke.com">pinvoke.com</a>. The icons are licensed under a Creative Commons Attribution 3.0 license. Used with permission.

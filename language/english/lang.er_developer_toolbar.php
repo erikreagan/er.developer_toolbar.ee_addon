@@ -47,6 +47,9 @@ $L = array(
 'check_for_extension_updates' =>
 'Would you like this extension to check for updates and display them on your CP homepage?',
 
+'lgau_required_message' =>
+'<br/><br/><small><strong>This requires <a href="http://leevigraham.com/cms-customisation/expressionengine/lg-addon-updater/">LG Addon Updater</a></strong></small>',
+
 'extension_credits' =>
 'Extension Credits',
 
@@ -76,16 +79,16 @@ $L = array(
 'Enter text for tooltip on logo',
 
 'background_color' =>
-'Hex code for the custom background color',
+'CSS value for the custom background color',
 
 'border_color' =>
-'Hex code for the custom border color',
+'CSS value for the custom border color',
 
 'font_color' =>
-'Hex code for custom font color',
+'CSS value for custom font color',
 
 'link_color' =>
-'Hex code for custom link color',
+'CSS value for custom link color',
 
 
 

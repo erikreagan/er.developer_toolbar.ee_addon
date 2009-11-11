@@ -1,399 +1,110 @@
 /*******************************
-    ER Developer Toolbar CSS
+ER Developer Toolbar CSS
 *******************************/
-#er_developer_toolbar {
-position: fixed;
-display: block;
-z-index: 9999999999;
-font: 12px Arial,sans-serif;
-background: #d8dbe5;
-color: #000;
-}
-#er_developer_toolbar a,#er_developer_toolbar a:visited {
-display: block;
-color: #0f2f5b;
-text-decoration: none;
-}
-#er_developer_toolbar a:hover {
-text-decoration: underline;
-}
-#er_developer_toolbar a:active {
-outline: none;
-}
-#er_developer_toolbar a:focus {
--moz-outline-style: none;
-}
-#er_developer_toolbar a.no_link {
-cursor: default;
-}
-#er_developer_toolbar p.toolbar_heading {
-display: block;
-text-indent: -999999px;
-}
-#er_developer_toolbar p,#er_developer_toolbar a,#er_developer_toolbar ul,#er_developer_toolbar li {
-margin: 0px;
-padding: 0px;
-}
-#er_developer_toolbar ul {
-list-style: none;
-}
-#er_developer_toolbar > ul li {
-line-height: 24px;
-position: relative;
-}
-#er_developer_toolbar .icon {
-display: block;
-width: 24px;
-height: 24px;
-text-indent: -999999px;
-background-image: url(sprite.png);
-}
-#er_developer_toolbar a#home {
-background-position: 0px 0px;
-}
-#er_developer_toolbar a#account {
-background-position: -24px 0px;
-}
-#er_developer_toolbar a#logout {
-background-position: -48px 0px;
-}
-#er_developer_toolbar a#statuses {
-background-position: -72px 0px;
-}
-#er_developer_toolbar a#templates {
-background-position: -168px 0px;
-}
-#er_developer_toolbar a#temp_debug {
-background-position: -192px 0px;
-}
-#er_developer_toolbar a#cache {
-background-position: -216px 0px;
-}
-#er_developer_toolbar a#addons {
-background-position: -240px 0px;
-}
-#er_developer_toolbar a#sql {
-background-position: -264px 0px;
-}
-#er_developer_toolbar a#edit {
-background-position: -312px 0px;
-}
-#er_developer_toolbar a#utility {
-background-position: -336px 0px;
-}
-#er_developer_toolbar #move {
-float: left;
-background-position: -290px 0px;
-cursor: move;
-}
-#er_developer_toolbar .status_on a,#er_developer_toolbar .status_off a,#er_developer_toolbar .status_on2 a {
-padding-left: 16px;
-background-image: url(sprite.png);
-background-repeat: no-repeat;
-}
-#er_developer_toolbar .status_on a {
-background-position: -8px -49px;
-}
-#er_developer_toolbar .status_on2 a {
-background-position: -8px -73px;
-}
-#er_developer_toolbar .status_off a {
-background-position: -8px -97px;
-}
-#er_developer_toolbar a.entry,#er_developer_toolbar a.template {
-padding-left: 24px;
-background-image: url(sprite.png);
-background-repeat: no-repeat;
-}
-#er_developer_toolbar a.template {
-background-position: -340px -25px;
-}
-#er_developer_toolbar a.entry {
-background-position: -340px -97px;
-}
-#er_developer_toolbar ul > li > div.sub, #er_developer_toolbar ul > li > div.sub li > .sub2 {
-display: none;
-}
-#er_developer_toolbar ul > li:hover div.sub {
-display: block;
-position: absolute;
-width: 180px;
-padding: 20px;
-}
-#er_developer_toolbar ul > li:hover div.sub li > .sub2 {
-width: 200px;
-padding: 20px;
-}
-#er_developer_toolbar ul > li:hover div.sub strong {
-border-bottom: 1px solid #888;
-display: block;
-margin-bottom: 8px;
-}
-#er_developer_toolbar ul > li:hover div.sub ul {
-background: #d8dbe5;
-border: 1px solid #434343;
-padding: 8px 24px 8px 14px;
--moz-border-radius: 5px;
--webkit-border-radius: 5px;
-}
-#er_developer_toolbar ul > li > ul li {
-float: none;
-}
-#er_developer_toolbar ul > li:hover a#edit + div.sub { width: 250px; }
+#er_developer_toolbar{position:fixed;display:block;z-index:9999999999;font:12px Arial,sans-serif;background:#d8dbe5;border:1px solid #434343;color:#000;}
+#er_developer_toolbar a,#er_developer_toolbar a:visited{display:block;color:#0f2f5b;text-decoration:none;}
+#er_developer_toolbar a:hover{text-decoration:underline;}
+#er_developer_toolbar a:active{outline:none;}
+#er_developer_toolbar a:focus{-moz-outline-style:none;}
+#er_developer_toolbar a.no_link{cursor:default;}
+#er_developer_toolbar p.toolbar_heading{display:block;text-indent:-999999px;}
+#er_developer_toolbar p,#er_developer_toolbar a,#er_developer_toolbar ul,#er_developer_toolbar li{margin:0px;padding:0px;}
+#er_developer_toolbar ul{list-style:none;}
+#er_developer_toolbar > ul li{line-height:24px;position:relative;}
+#er_developer_toolbar .icon{display:block;width:24px;height:24px;text-indent:-999999px;background-image:url(sprite.png);}
+#er_developer_toolbar a#home{background-position:0px 0px;}
+#er_developer_toolbar a#account{background-position:-24px 0px;}
+#er_developer_toolbar a#logout{background-position:-48px 0px;}
+#er_developer_toolbar a#statuses{background-position:-72px 0px;}
+#er_developer_toolbar a#templates{background-position:-168px 0px;}
+#er_developer_toolbar a#temp_debug{background-position:-192px 0px;}
+#er_developer_toolbar a#cache{background-position:-216px 0px;}
+#er_developer_toolbar a#addons{background-position:-240px 0px;}
+#er_developer_toolbar a#sql{background-position:-264px 0px;}
+#er_developer_toolbar a#edit{background-position:-312px 0px;}
+#er_developer_toolbar a#utility{background-position:-336px 0px;}
+#er_developer_toolbar #move{float:left;background-position:-290px 0px;cursor:move;}
+#er_developer_toolbar .status_on a,#er_developer_toolbar .status_off a,#er_developer_toolbar .status_on2 a{padding-left:16px;background-image:url(sprite.png);background-repeat:no-repeat;}
+#er_developer_toolbar .status_on a{background-position:-8px -49px;}
+#er_developer_toolbar .status_on2 a{background-position:-8px -73px;}
+#er_developer_toolbar .status_off a{background-position:-8px -97px;}
+#er_developer_toolbar a.entry,#er_developer_toolbar a.template{padding-left:24px;background-image:url(sprite.png);background-repeat:no-repeat;}
+#er_developer_toolbar a.template{background-position:-340px -25px;}
+#er_developer_toolbar a.entry{background-position:-340px -97px;}
+#er_developer_toolbar ul > li > div.sub,#er_developer_toolbar ul > li > div.sub li > .sub2{display:none;}
+#er_developer_toolbar ul > li:hover div.sub{display:block;position:absolute;width:180px;padding:20px;}
+#er_developer_toolbar ul > li:hover div.sub li > .sub2{width:200px;padding:20px;}
+#er_developer_toolbar ul > li:hover div.sub strong{border-bottom:1px solid #888;display:block;margin-bottom:8px;}
+#er_developer_toolbar ul > li:hover div.sub ul{background:#d8dbe5;border:1px solid #434343;padding:8px 24px 8px 14px;-moz-border-radius:5px;-webkit-border-radius:5px;}
+#er_developer_toolbar ul > li > ul li{float:none;}
+#er_developer_toolbar ul > li:hover a#edit + div.sub{width:250px;}
 /*******************************
 Top Aligned
 ******************************/
-#er_developer_toolbar.top {
-top: 0px;
-border: 1px solid #434343;
-border-top: none;
--moz-border-radius-bottomleft: 5px;
--moz-border-radius-bottomright: 5px;
--webkit-border-bottom-left-radius: 5px;
--webkit-border-bottom-right-radius: 5px;
-}
-#er_developer_toolbar.top ul > li:hover div.sub {
-top: 21px;
-left: -10px;
-padding-top: 12px;
-}
-#er_developer_toolbar.top span.arrow {
-display: block;
-width: 17px;
-height: 10px;
-background: url(sprite.png) -128px -30px no-repeat;
-position: absolute;
-top: 4px;
-left: 15px;
-}
-#er_developer_toolbar.top ul > li > div.sub li:hover > .sub2 {
-top: -33px;;
-}
-#er_developer_toolbar.top ul > li > div.sub li:hover > .sub2 span.arrow {
-top: 33px;
-}
+#er_developer_toolbar.top{top:0px;border-top:none;-moz-border-radius-bottomleft:5px;-moz-border-radius-bottomright:5px;-webkit-border-bottom-left-radius:5px;-webkit-border-bottom-right-radius:5px;}
+#er_developer_toolbar.top ul > li:hover div.sub{top:21px;left:-10px;padding-top:12px;}
+#er_developer_toolbar.top span.arrow{display:block;width:17px;height:10px;background:url(sprite.png) -128px -30px no-repeat;position:absolute;top:4px;left:15px;}
+#er_developer_toolbar.top ul > li > div.sub li:hover > .sub2{top:-33px;;}
+#er_developer_toolbar.top ul > li > div.sub li:hover > .sub2 span.arrow{top:33px;}
 /*******************************
 Bottom Aligned
 ******************************/
-#er_developer_toolbar.bot {
-bottom: 0px;
-border: 1px solid #434343;
-border-bottom: none;
--moz-border-radius-topleft: 5px;
--moz-border-radius-topright: 5px;
--webkit-border-top-left-radius: 5px;
--webkit-border-top-right-radius: 5px;
-}
-#er_developer_toolbar.bot ul > li:hover div.sub {
-bottom: 21px;
-padding-bottom: 12px;
-}
-#er_developer_toolbar.bot span.arrow {
-display: block;
-width: 17px;
-height: 10px;
-background: url(sprite.png) -107px -31px no-repeat;
-position: absolute;
-bottom: 4px;
-left: 15px;
-}
-#er_developer_toolbar.bot ul > li > div.sub li:hover > .sub2 {
-bottom: -30px;
-}
-#er_developer_toolbar.bot ul > li > div.sub li:hover > .sub2 span.arrow {
-bottom: 33px;
-}
+#er_developer_toolbar.bot{bottom:0px;border-bottom:none;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;-webkit-border-top-left-radius:5px;-webkit-border-top-right-radius:5px;}
+#er_developer_toolbar.bot ul > li:hover div.sub{bottom:21px;padding-bottom:12px;}
+#er_developer_toolbar.bot span.arrow{display:block;width:17px;height:10px;background:url(sprite.png) -107px -31px no-repeat;position:absolute;bottom:4px;left:15px;}
+#er_developer_toolbar.bot ul > li > div.sub li:hover > .sub2{bottom:-30px;}
+#er_developer_toolbar.bot ul > li > div.sub li:hover > .sub2 span.arrow{bottom:33px;}
 /*******************************
 Horizontal (top and bottom)
 ******************************/
-#er_developer_toolbar.hor {
-width: 90%;
-left: 4%;
-padding: 5px 1% 5px;
-}
-#er_developer_toolbar.hor p.toolbar_heading {
-float: left;
-width: 101px;
-height: 24px;
-background: url(sprite.png) 0px -24px no-repeat;
-}
-#er_developer_toolbar.hor > ul {
-float: left;
-}
-#er_developer_toolbar.hor > ul > li {
-float: left;
-}
-#er_developer_toolbar.hor .divider {
-display: block;
-float: left;
-width: 4px;
-height: 24px;
-margin: 0 10px;
-background: url(sprite.png) -100px -24px no-repeat;
-}
-#er_developer_toolbar.hor ul > li:hover div.sub {
-left: -30px;
-}
-#er_developer_toolbar.hor span.arrow {
-left: 35px;
-}
-#er_developer_toolbar.hor ul#toolbar_member_data li {
-float: left;
-margin-right: 20px;
-}
-#er_developer_toolbar.hor ul#toolbar_calc {
-float: right;
-}
-#er_developer_toolbar.hor ul#toolbar_calc li {
-float: left;
-margin-left: 20px;
-}
-#er_developer_toolbar.hor ul#clock {
-position: absolute;
-right: 1%;
-}
-#er_developer_toolbar.hor ul#clock > li:hover div.sub {
-position: absolute;
-left: -162px;
-text-align: right;
-}
-#er_developer_toolbar.hor ul#clock span.arrow {
-left: 146px;
-}
-#er_developer_toolbar.hor ul > li > div.sub li:hover > .sub2 {
-display: block;
-position: absolute;
-padding-left: 47px;
-left: 121px;
-}
-#er_developer_toolbar.hor ul > li > div.sub li:hover > .sub2 span.arrow {
-display: block;
-width: 10px;
-height: 17px;
-background: url(sprite.png) -173px -27px no-repeat;
-position: absolute;
-left: 39px;
-}
+#er_developer_toolbar.hor{width:100px;left:4%;padding:4px 15px}
+#er_developer_toolbar.hor p.toolbar_heading{float:left;width:100px;height:25px;background:url(sprite.png) 0px -24px no-repeat;}
+#er_developer_toolbar.hor > ul{float:left;}
+#er_developer_toolbar.hor > ul > li{float:left;}
+#er_developer_toolbar.hor .divider{display:block;float:left;width:4px;height:24px;margin:0 10px;background:url(sprite.png) -100px -24px no-repeat;}
+#er_developer_toolbar.hor > ul, #er_developer_toolbar.hor > .divider {display: none;}
+#er_developer_toolbar.hor ul > li:hover div.sub{left:-30px;}
+#er_developer_toolbar.hor span.arrow{left:35px;}
+#er_developer_toolbar.hor ul#toolbar_member_data li{float:left;margin-right:20px;}
+#er_developer_toolbar.hor ul#toolbar_calc{float:right;}
+#er_developer_toolbar.hor ul#toolbar_calc li{float:left;margin-left:20px;}
+#er_developer_toolbar.hor ul#clock{position:absolute;right:1%;}
+#er_developer_toolbar.hor ul#clock > li:hover div.sub{position:absolute;left:-162px;text-align:right;}
+#er_developer_toolbar.hor ul#clock span.arrow{left:146px;}
+#er_developer_toolbar.hor ul > li > div.sub li:hover > .sub2{display:block;position:absolute;padding-left:47px;left:121px;}
+#er_developer_toolbar.hor ul > li > div.sub li:hover > .sub2 span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -173px -27px no-repeat;position:absolute;left:39px;}
 /*******************************
 Left Aligned
 ******************************/
-#er_developer_toolbar.left {
-left: 0px;
-border: 1px solid #434343;
-border-left: none;
--moz-border-radius-topright: 5px;
--moz-border-radius-bottomright: 5px;
--webkit-border-top-right-radius: 5px;
--webkit-border-bottom-right-radius: 5px;
-}
-#er_developer_toolbar.left ul > li:hover div.sub {
-left: 21px;
-top: -10px;
-padding-left: 14px;
-}
-#er_developer_toolbar.left #clock { left: 4px; }
-#er_developer_toolbar.left span.arrow {
-display: block;
-width: 10px;
-height: 17px;
-background: url(sprite.png) -173px -27px no-repeat;
-position: absolute;
-left: 6px;
-top: 15px;
-}
-#er_developer_toolbar.left ul > li > div.sub li:hover > .sub2 {
-top: -42px;
-padding-left: 29px;
-left: 160px;
-}
-#er_developer_toolbar.left ul > li > div.sub li:hover > .sub2 span.arrow {
-top: 45px;
-left: 21px;
-}
+#er_developer_toolbar.left{left:0px;border-left:none;-moz-border-radius-topright:5px;-moz-border-radius-bottomright:5px;-webkit-border-top-right-radius:5px;-webkit-border-bottom-right-radius:5px;}
+#er_developer_toolbar.left ul > li:hover div.sub{left:19px;top:-10px;padding-left:14px;}
+#er_developer_toolbar.left #clock{left:4px;}
+#er_developer_toolbar.left span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -173px -27px no-repeat;position:absolute;left:6px;top:15px;}
+#er_developer_toolbar.left ul > li > div.sub li:hover > .sub2{top:-42px;padding-left:29px;left:160px;}
+#er_developer_toolbar.left ul > li > div.sub li:hover > .sub2 span.arrow{top:45px;left:21px;}
 /*******************************
 Right Aligned
 *******************************/
-#er_developer_toolbar.right {
-right: 0px;
-border: 1px solid #434343;
-border-right: none;
--moz-border-radius-topleft: 5px;
--moz-border-radius-bottomleft: 5px;
--webkit-border-top-left-radius: 5px;
--webkit-border-bottom-left-radius: 5px;
-}
-#er_developer_toolbar.right ul > li:hover div.sub {
-right: 21px;
-padding-right: 14px;
-}
-#er_developer_toolbar.right span.arrow {
-display: block;
-width: 10px;
-height: 17px;
-background: url(sprite.png) -152px -27px no-repeat;
-position: absolute;
-right: 6px;
-}
-#er_developer_toolbar.right #clock { right: 4px; }
-#er_developer_toolbar.right ul > li > div.sub li:hover > .sub2 {
-padding-right: 19px;
-right: 160px;
-}
-#er_developer_toolbar.right ul > li > div.sub li:hover > .sub2 span.arrow {
-background: url(sprite.png) -152px -27px no-repeat !important;
-right: 12px;
-}
+#er_developer_toolbar.right{right:0px;border-right:none;-moz-border-radius-topleft:5px;-moz-border-radius-bottomleft:5px;-webkit-border-top-left-radius:5px;-webkit-border-bottom-left-radius:5px;}
+#er_developer_toolbar.right ul > li:hover div.sub{right:21px;padding-right:14px;}
+#er_developer_toolbar.right span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -152px -27px no-repeat;position:absolute;right:6px;}
+#er_developer_toolbar.right #clock{right:4px;}
+#er_developer_toolbar.right ul > li > div.sub li:hover > .sub2{padding-right:19px;right:160px;}
+#er_developer_toolbar.right ul > li > div.sub li:hover > .sub2 span.arrow{background:url(sprite.png) -152px -27px no-repeat !important;right:12px;}
 /*******************************
 Vertical (left and right)
 ******************************/
-#er_developer_toolbar.vert {
-height: 90%;
-top: 3%;
-padding: 1% 3px 1% 5px;
-}
-#er_developer_toolbar.vert p.toolbar_heading {
-width: 27px;
-height: 9px;
-background: url(sprite.png) -233px -31px no-repeat;
-}
-#er_developer_toolbar.vert > ul > li div.sub {
-width: 200px;
-}
-#er_developer_toolbar.vert ul > li:hover div.sub {
-top: -30px;
-}
-#er_developer_toolbar.vert span.arrow {
-top: 35px;
-}
-#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 {
-top: -62px;
-}
-#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 span.arrow {
-top: 65px;
-}
-#er_developer_toolbar.vert .divider {
-display: block;
-width: 24px;
-height: 4px;
-margin: 10px auto;
-background: url(sprite.png) -194px -35px no-repeat;
-}
-#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 {
-display: block;
-position: absolute;
-width: 170px;
-}
-#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 span.arrow {
-display: block;
-width: 10px;
-height: 17px;
-background: url(sprite.png) -173px -27px no-repeat;
-position: absolute;
-}
-#er_developer_toolbar.vert #clock { position: absolute; bottom: 1%; }
-#er_developer_toolbar.vert ul#clock > li:hover > div.sub {
-    top: -89px;
-}
-#er_developer_toolbar.vert ul#clock > li:hover > div.sub span.arrow {
-    top: 91px;
-}
+#er_developer_toolbar.vert{height:25px;top:3%;padding:10px 4px;}
+#er_developer_toolbar.vert p.toolbar_heading{width:25px;height:25px;background: url(sprite.png) -234px -23px no-repeat;}
+#er_developer_toolbar.vert > ul > li div.sub{width:200px;}
+#er_developer_toolbar.vert ul > li:hover div.sub{top:-30px;}
+#er_developer_toolbar.vert span.arrow{top:35px;}
+#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2{top:-62px;}
+#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 span.arrow{top:65px;}
+#er_developer_toolbar.vert .divider{display:block;width:24px;height:4px;margin:10px auto;background:url(sprite.png) -194px -35px no-repeat;}
+#er_developer_toolbar.vert > ul, #er_developer_toolbar.vert > .divider {display: none;}
+#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2{display:block;position:absolute;width:170px;}
+#er_developer_toolbar.vert ul > li > div.sub li:hover > .sub2 span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -173px -27px no-repeat;position:absolute;}
+#er_developer_toolbar.vert #clock{position:absolute;bottom:1%;}
+#er_developer_toolbar.vert ul#clock > li:hover > div.sub{top:-89px;}
+#er_developer_toolbar.vert ul#clock > li:hover > div.sub span.arrow{top:91px;}

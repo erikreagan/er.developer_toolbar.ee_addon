@@ -7,7 +7,7 @@
  * /system/extensions/ folder in your ExpressionEngine installation.
  *
  * @package ERDeveloperToolbar
- * @version 1.0.0
+ * @version 1.0.1
  * @author Erik Reagan http://erikreagan.com
  * @copyright Copyright (c) 2009 Erik Reagan
  * @see http://erikreagan.com/projects/er_developer_toolbar/
@@ -23,7 +23,7 @@ class Er_developer_toolbar
    var $settings = array();
 
    var $name = 'ER Developer Toolbar';
-   var $version = '1.0.0';
+   var $version = '1.0.1';
    var $description = 'Adds a developer toolbar as a global variable available within your templates';
    var $settings_exist = 'y';
    var $docs_url = '';

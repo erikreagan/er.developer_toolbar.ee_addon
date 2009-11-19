@@ -82,3 +82,21 @@ h2. Credits
 *Icons*
 
 The icons used in the toolbar are from the icon set _Fugue_ by Yusuke Kamiyamane of <a href="http://pinvoke.com">pinvoke.com</a>. The icons are licensed under a Creative Commons Attribution 3.0 license. Used with permission.
+
+
+h2. Change Log
+
+*+Nov 19, 2009: 1.0.1+*
+* Added fly-out menu for Modules for any modules with an CP backend (based on user permissions still)
+
+*Nov 11, 2009: 1.0.0*
+* Complete rewrite and initial release of the 1.0 version of toolbar
+
+*Oct 4, 2009: 0.5.1*
+* Added settings for 5 of the quick links for more fine-tuning via the CP
+* Corrected a few typos in readme
+* Adjusted some default CSS settings
+* Added a logout link in place of member group
+
+*Oct 3, 2009: 0.5.0*
+* Initial Release

@@ -628,6 +628,7 @@ class Er_developer_toolbar
 
       
       $user_access = array(
+         'group_id' => $s->userdata['group_id'],
          'can_access_cp' => $s->userdata['can_access_cp'],
          'can_access_admin' => $s->userdata['can_access_admin'],
          'can_access_design' => $s->userdata['can_access_design'],
@@ -722,6 +723,68 @@ class Er_developer_toolbar
    }
    
    
+   
+   /**
+    * Create module sub-menu
+    * 
+    * @access Private
+    * @return string
+    */
+   function _create_mod_menu($user_group_id)
+   {
+      global $DB, $SESS;
+      $mod_menu = '';
+      
+      // $extra_sql = ($user_group_id != '1') ? "AND exp_module_member_groups.group_id = $user_group_id" : "" ;
+      
+      if ($user_group_id == '1')
+      {
+         $enabled_modules_results = $DB->query("SELECT module_name
+                                                FROM exp_modules
+                                                WHERE has_cp_backend = 'y'
+                                                ORDER BY module_name
+                                                ");
+      } else {      
+         $enabled_modules_results = $DB->query("SELECT exp_modules.module_id AS m_id,module_name
+                                                FROM exp_modules
+                                                JOIN exp_module_member_groups
+                                                ON exp_modules.module_id = exp_module_member_groups.module_id
+                                                WHERE has_cp_backend = 'y'
+                                                AND exp_module_member_groups.group_id = $user_group_id
+                                                ORDER BY module_name
+                                                ");
+      }
+
+      if ($enabled_modules_results->num_rows == 0)
+      {
+         return $mod_menu;
+      } else {
+         
+          // Start sub-menu
+          $mod_menu .= "<div class='sub2'>
+             <ul>
+                <li><strong>Module CP Pages</strong></li>
+                ";
+
+          foreach ($enabled_modules_results->result as $mod) {
+             $name = ucwords(str_replace('_',' ',str_replace('_ext','',$mod['module_name'])));
+             $mod_menu .= "<li><a href='".CP_URL."?C=modules&M=".$mod['module_name']."'>$name</a></li>\n";
+          }
+
+          // Close sub-menu ul and div
+          $mod_menu .= "
+             </ul>
+             <span class='arrow'></span>
+          </div>
+";
+      }
+
+      return $mod_menu;
+  
+   }
+   
+   
+   
      
    /**
     * Create extensions sub-menu
@@ -776,8 +839,9 @@ class Er_developer_toolbar
    }
    
    
+   
    /**
-    * Create extensions sub-menu
+    * Create plugin sub-menu
     * 
     * @access Private
     * @return string
@@ -1056,7 +1120,13 @@ class Er_developer_toolbar
       if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_modules'] == 'y'))
       {
          $toolbar .= "
-               <li><a id='modules' href='".CP_URL."?C=modules'>Modules</a></li>";
+               <li>
+                  <a id='modules' href='".CP_URL."?C=modules'>Modules</a>
+";
+         $toolbar .= $this->_create_mod_menu($user_access['group_id']);
+         
+         $toolbar .= "
+                  </li>";
       }
       
       if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules'] == 'y')))

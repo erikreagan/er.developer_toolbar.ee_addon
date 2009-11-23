@@ -607,6 +607,41 @@ class Er_developer_toolbar
    
    
    
+   
+   
+   
+   
+   
+   
+   /**
+    *                              
+    *                              
+    *                              
+    *                              
+    *                              
+    *                              
+    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
+    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
+    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
+    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
+    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
+    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
+    *                              
+    *                              
+    *                              
+    *                              
+    *                              
+    *                              
+    *
+    **/
+    
+    
+    
+    
+    
+    
+    
+   
    /**
     * Sessions End
     *
@@ -904,12 +939,164 @@ class Er_developer_toolbar
       
       $toolbar = '';
       
-      // Get settings for site and debug and set CSS classes
-      $system_status = ($PREFS->core_ini['is_system_on'] == 'y') ? 'on' : 'off' ;
-      $template_debugging = ($PREFS->core_ini['template_debugging'] == 'y') ? 'on' : 'off' ;
-      $show_queries = ($PREFS->core_ini['show_queries'] == 'y') ? 'on' : 'off' ;
+   
       $tooltip_text = ($s['tooltip_text'] == '') ? 'ER Developer Toolbar: by Erik Reagan' : $s['tooltip_text'] ;
    
+      
+      
+      // Build the toollbar
+      $toolbar .= "
+<div id='er_developer_toolbar' class='".$this->settings['position']."'>
+";
+
+//       // Not quite ready for prime time...
+//       $toolbar .= "
+//    <div class='icon' id='move'></div>
+// ";
+
+      $toolbar .= "
+      
+   <p title='".$tooltip_text."' class='toolbar_heading'>Developer Toolbar</p>
+
+   ";
+   
+      $toolbar .= $this->_piece_divider('front');
+   
+   
+      
+      // This is the magic opener
+      $toolbar .= "
+   <ul>";
+   
+   
+      $toolbar .= $this->_piece_home();
+      $toolbar .= $this->_piece_accounts();
+      $toolbar .= $this->_piece_logout();
+      
+
+      $toolbar .= $this->_piece_divider();
+
+      
+      $toolbar .= $this->_piece_statuses();
+      $toolbar .= $this->_piece_templates();
+      $toolbar .= $this->_piece_cache();
+      
+   
+      $toolbar .= $this->_piece_divider();
+   
+      
+      $toolbar .= $this->_piece_addons($user_access);      
+      $toolbar .= $this->_piece_temp_debug();
+      $toolbar .= $this->_piece_sql_queries();
+      
+      
+      // this is the magic closing UL
+      $toolbar .= "
+   </ul>";
+   
+      
+      $toolbar .= $this->_piece_load_stats();
+   
+   
+      // And now the closing div tag for the entire toolbar
+      $toolbar .= "
+</div>\n\n";
+
+      return $toolbar;
+      
+   }
+   
+   
+   /**
+    * Add home links
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_home()
+   {
+      return "
+      <li>
+         <a class='icon no_link' id='home' href='#'>CP Home</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Home Page</strong></li>
+               <li><a class='self' href='{site_url}'>{site_name} Home Page</a></li>
+               <li><a href='".CP_URL."'>Control Panel Home Page</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>";
+   }
+
+
+   
+   
+   
+   
+   /**
+    * Add account links
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_accounts()
+   {
+      return "
+      <li>
+         <a class='icon no_link' id='account' href='#'>Member Accounts</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Member Accounts</strong></li>
+               <li><a href='".CP_URL."?C=myaccount'>My Account</a></li>
+               <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=mbr_group_manager'>Member Groups</a></li>
+               <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=view_members'>Member List</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>";
+   }
+   
+   
+   
+   
+   
+   /**
+    * Add logout link
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_logout()
+   {
+      return "
+      <li>
+         <a class='icon no_link' id='logout' href='#'>Logout</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Logout</strong></li>
+               <li><a href='".CP_URL."?C=logout'>Logout as {username}</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>";
+   }
+   
+   
+   
+   
+   
+   /**
+    * Add status links
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_statuses()
+   {
+      global $PREFS;
+      
+      $system_status = ($PREFS->core_ini['is_system_on'] == 'y') ? 'on' : 'off' ;
       
       // hard coded some language lines because I couldn't get $LANG working...
       // will check back to fix later
@@ -931,111 +1118,41 @@ class Er_developer_toolbar
             break;
       }
       
-      // Build the toollbar
-      $toolbar .= "
-<div id='er_developer_toolbar' class='".$this->settings['position']."'>
-";
-
-//       // Not quite ready for prime time...
-//       $toolbar .= "
-//    <div class='icon' id='move'></div>
-// ";
-
-      $toolbar .= "
-      
-   <p title='".$tooltip_text."' class='toolbar_heading'>Developer Toolbar</p>
-
-   <div class='divider'></div>      
-
-   <ul>";
-   
-      if ($user_access['can_access_cp'] == 'y')
-      {
-         $toolbar .= "
-      <li>
-         <a class='icon no_link' id='home' href='#'>CP Home</a>
-         <div class='sub'>
-            <ul>
-               <li><strong>Home Page</strong></li>
-               <li><a class='self' href='{site_url}'>{site_name} Home Page</a></li>
-               <li><a href='".CP_URL."'>Control Panel Home Page</a></li>
-            </ul>
-            <span class='arrow'></span>
-         </div>
-      </li>
-      <li>
-         <a class='icon no_link' id='account' href='#'>Member Accounts</a>
-         <div class='sub'>
-            <ul>
-               <li><strong>Member Accounts</strong></li>
-               <li><a href='".CP_URL."?C=myaccount'>My Account</a></li>";
-
-      if ($user_access['can_admin_members'] == 'y')
-      {
-         $toolbar .="
-               <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=mbr_group_manager'>Member Groups</a></li>
-               <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=view_members'>Member List</a></li>";
-      }
-      
-      
-      $toolbar .= "
-            </ul>
-            <span class='arrow'></span>
-         </div>
-      </li>";
-      }
-      
-      $toolbar .= "
-      <li>
-         <a class='icon no_link' id='logout' href='#'>Logout</a>
-         <div class='sub'>
-            <ul>
-               <li><strong>Logout</strong></li>
-               <li><a href='".CP_URL."?C=logout'>Logout as {username}</a></li>
-            </ul>
-            <span class='arrow'></span>
-         </div>
-      </li>
-   </ul>
-
-";
-      if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_design'] == 'y')))
-      {
-         $toolbar .= "
-   <div class='divider'></div>
-
-
-   <ul>";
-      }
-      
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') && ($user_access['can_admin_preferences'] == 'y'))
-      {
-         $toolbar .= "
+      $statuses = "
       <li>
          <a class='icon no_link' id='statuses' href='#'>Statuses</a>
          <div class='sub'>
             <ul>
                <li><strong>General Statuses</strong></li>
                <li class='status_$system_status'><a title='System is ".ucfirst($system_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='system_status'>System Status</a></li>";
-      
-         if ($PREFS->core_ini['multiple_sites_enabled'] == 'y')
-         {
-            $site_status = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
-            $toolbar .= "
-                  <li class='status_$site_status'><a title='Site is ".ucfirst($site_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='site_status'>Site Status</a></li>";
-         }
-      
-         $toolbar .= "
+
+      $site_status = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
+      $statuses .= "
+               <li class='status_$site_status'><a title='Site is ".ucfirst($site_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='site_status'>Site Status</a></li>";
+
+      $statuses .= "
                <li class='status_$debug_status'><a title='".$debug_message."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=output_cfg' id='debug_status'>Debug Status</a></li>
             </ul>
             <span class='arrow'></span>
          </div>
       </li>";
-      }
       
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_design'] == 'y'))
-      {
-         $toolbar .= "
+      return $statuses;
+   }
+   
+   
+   
+      
+   
+   /**
+    * Add Template links
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_templates()
+   {
+      return "
       <li>
          <a class='icon no_link' id='templates' href='#'>Template Options</a>
          <div class='sub'>
@@ -1048,99 +1165,115 @@ class Er_developer_toolbar
             <span class='arrow'></span>
          </div>
       </li>";
-      }
+   }
+
+
+   
+   
+   
+   
+   /**
+    * Add Cache clearing links
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_cache()
+   {
       
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') && ($user_access['can_admin_utilities'] == 'y'))
-      {
-         $toolbar .= "
+      // Not quite ready for prime time            
+      // $toolbar .= "
+      //       <li><a href='#'>Page Cache</a></li>
+      //       <li><a href='#'>Tag Cache</a></li>
+      //       <li><a href='#'>Database Cache</a></li>
+      //       <li><a href='#'>SQL Cache</a></li>
+      //       <li><a href='#'>Relationships Cache</a></li>
+      //       <li><a href='#'>All Cache</a></li>";
+      
+      return "
       <li>
          <a class='icon no_link' id='cache' href='#'>Clear Cache</a>
          <div class='sub'>
             <ul>
                <li><strong>Clear Cache</strong></li>
-               <li><a href='".CP_URL."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear all Cache</a></li>";
-               
-         // Not quite ready for prime time            
-         // $toolbar .= "
-         //       <li><a href='#'>Page Cache</a></li>
-         //       <li><a href='#'>Tag Cache</a></li>
-         //       <li><a href='#'>Database Cache</a></li>
-         //       <li><a href='#'>SQL Cache</a></li>
-         //       <li><a href='#'>Relationships Cache</a></li>
-         //       <li><a href='#'>All Cache</a></li>";
-               
-      $toolbar .= "
+               <li><a href='".CP_URL."?C=admin&amp;M=utilities&amp;P=clear_cache_form'>Clear all Cache</a></li>
             </ul>
             <span class='arrow'></span>
          </div>
       </li>";
-      }
+   }
+   
+   
+   
+   
+   
+   /**
+    * Add Add-Ons direct links
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_addons($user_access)
+   {
+      $addons = '';
       
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') || ($user_access['can_access_design'] == 'y'))
-      {
-         $toolbar .= "
-   </ul>";
-      }
-      
-      if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules'] == 'y')))
-      {
-         $toolbar .= "
-         
-         
-   <div class='divider'></div>
+      $addons = "
+          <li>
+               <a class='icon no_link' id='addons' href='#'>Addons</a>
+               <div class='sub visible'>
+                  <ul>
+                     <li><strong>Add-ons</strong></li>";
 
 
-   <ul>
-      <li>
-         <a class='icon no_link' id='addons' href='#'>Addons</a>
-         <div class='sub visible'>
-            <ul>
-               <li><strong>Add-ons</strong></li>";
-      }
-      
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y'))
-      {
-         $toolbar .= "
-               <li>
-                  <a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a>
-";
-         $toolbar .= $this->_create_ext_menu();
+            $addons .= "
+                     <li>
+                     <a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a>
+      ";
+            $addons .= $this->_create_ext_menu();
 
-         $toolbar .="
-               </li>
-               <li>
-                  <a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a>
-";
-         $toolbar .= $this->_create_pi_menu();
-         
-         $toolbar .= "
-               </li>";
-      }
-      
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_modules'] == 'y'))
-      {
-         $toolbar .= "
-               <li>
-                  <a id='modules' href='".CP_URL."?C=modules'>Modules</a>
-";
-         $toolbar .= $this->_create_mod_menu($user_access['group_id']);
-         
-         $toolbar .= "
-                  </li>";
-      }
-      
-      if (($user_access['can_access_cp'] == 'y') && (($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules'] == 'y')))
-      {
-         $toolbar .= "
-            </ul>
-            <span class='arrow'></span>
-         </div>
-      </li>";
-      }
-      
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y'))
-      {
-         $toolbar .= "
+            $addons .="
+                     </li>
+                     <li>
+                        <a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a>
+      ";
+               $addons .= $this->_create_pi_menu();
+
+               $addons .= "
+                     </li>";
+
+               $addons .= "
+                     <li>
+                        <a id='modules' href='".CP_URL."?C=modules'>Modules</a>
+      ";
+               $addons .= $this->_create_mod_menu($user_access['group_id']);
+
+               $addons .= "
+                        </li>";
+
+               $addons .= "
+                  </ul>
+                  <span class='arrow'></span>
+               </div>
+            </li>";
+            
+      return $addons;
+   }
+   
+   
+   
+   
+   
+   /**
+    * Add Template Debugging preference link
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_temp_debug()
+   {
+      global $PREFS;
+      $template_debugging = ($PREFS->core_ini['template_debugging'] == 'y') ? 'on' : 'off' ;
+      return "
       <li>
          <a class='icon no_link' id='temp_debug' href='#'>Template Debugging</a>
          <div class='sub'>
@@ -1150,7 +1283,24 @@ class Er_developer_toolbar
             </ul>
             <span class='arrow'></span>
          </div>
-      </li>
+      </li>";
+   }
+   
+   
+   
+   
+   
+   /**
+    * Add SQL Query preference link
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_sql_queries()
+   {
+      global $PREFS;
+      $show_queries = ($PREFS->core_ini['show_queries'] == 'y') ? 'on' : 'off' ;
+      return "
       <li>
          <a class='icon no_link' id='sql' href='#'>Display SQL Queries</a>
          <div class='sub'>
@@ -1161,15 +1311,23 @@ class Er_developer_toolbar
             <span class='arrow'></span>
          </div>
       </li>";
-      }
+   }
+   
+   
+   
+   
+   
+   /**
+    * Add load stats to toolbar
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_load_stats()
+   {
+      return "
       
-      if (($user_access['can_access_cp'] == 'y') && ($user_access['can_access_admin'] == 'y') || ($user_access['can_access_modules']) == 'y')
-      {
-         $toolbar .= "
-   </ul>";
-      }
 
-      $toolbar .= "
    <ul id='clock'>
       <li>
          <a class='icon no_link' id='utility' href='#'>Good to Know</a>
@@ -1182,13 +1340,43 @@ class Er_developer_toolbar
             <span class='arrow'></span>
          </div>
       </li>
-   </ul>
-
-</div>\n\n";
-
-      return $toolbar;
+   </ul>";
       
    }
+   
+   
+   
+   
+   
+   /**
+    * Add a divider to the toolbar
+    *
+    * @param      string   $posiiton
+    * @access     private
+    * @return     string
+    */
+   function _piece_divider($position = 'standard')
+   {
+      $divider = '';
+      
+      if ($position != 'front')
+      {
+         $divider .= "  </ul>";
+      }
+      
+      $divider .= "
+   <div class='divider'></div>
+";
+
+      if ($position != 'front')
+      {
+         $divider .= "  <ul>";
+      }
+      
+      return $divider;
+      
+   }
+   
    
    
    
@@ -1221,8 +1409,11 @@ class Er_developer_toolbar
        return $sources;
 
    }
-
-
+   
+   
+   
+   
+   
    /**
     * Register a new Addon
     *

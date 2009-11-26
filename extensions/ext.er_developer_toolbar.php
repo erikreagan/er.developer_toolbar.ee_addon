@@ -50,7 +50,7 @@ class Er_developer_toolbar
    {
       global $IN, $SESS;
       
-      if(isset($SESS->cache['er']) === FALSE){ $SESS->cache['er'] = array();}
+      if(isset($SESS->cache['er']) === FALSE) { $SESS->cache['er'] = array(); }
 
 		$this->settings = $this->_get_settings();
    }
@@ -87,8 +87,7 @@ class Er_developer_toolbar
 		// if it has, return the session
 		// if not, return false
 		if(empty($SESS->cache['er']['Er_developer_toolbar']['settings']) !== TRUE)
-		{
-			$settings = ($return_all === TRUE) ?  $SESS->cache['er']['Er_developer_toolbar']['settings'] : $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
+		{			$settings = ($return_all === TRUE) ?  $SESS->cache['er']['Er_developer_toolbar']['settings'] : $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
 		}
 
 		return $settings;
@@ -946,13 +945,15 @@ class Er_developer_toolbar
       
       // Build the toollbar
       $toolbar .= "
-<div id='er_developer_toolbar' class='".$this->settings['position']."'>
+      <div class='er_developer_toolbar_container erdtb_hor inactive' id='erdtb_top'></div>
+      <div class='er_developer_toolbar_container erdtb_vert inactive' id='erdtb_left'></div>
+      <div class='er_developer_toolbar_container erdtb_vert inactive' id='erdtb_right'></div>
+      <div class='er_developer_toolbar_container erdtb_hor' id='erdtb_bottom'>
+<div id='er_developer_toolbar'>
 ";
 
-//       // Not quite ready for prime time...
-//       $toolbar .= "
-//    <div class='icon' id='move'></div>
-// ";
+      // Not quite ready for prime time...
+      $toolbar .= $this->_piece_move();
 
       $toolbar .= "
       
@@ -1000,11 +1001,42 @@ class Er_developer_toolbar
    
       // And now the closing div tag for the entire toolbar
       $toolbar .= "
-</div>\n\n";
+</div>\n\n</div>";
 
       return $toolbar;
       
    }
+   
+   
+   /**
+    * Add move tool
+    *
+    * @access     private
+    * @return     string
+    */
+   function _piece_move()
+   {
+      return "
+      <ul>
+      <li>
+         <a class='icon no_link' id='move' href='#'>Move Toolbar</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Move Toolbar</strong></li>
+               <li><a id='move_top' href='#'>Top</a></li>
+               <li><a id='move_bot' href='#'>Bottom</a></li>
+               <li><a id='move_left' href='#'>Left</a></li>
+               <li><a id='move_right' href='#'>Right</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>
+      </ul>";
+   }
+
+
+   
+   
    
    
    /**
@@ -1152,19 +1184,53 @@ class Er_developer_toolbar
     */
    function _piece_templates()
    {
-      return "
+      global $DB;
+      
+      $groups = $DB->query("SELECT group_id,site_id,group_name FROM exp_template_groups ORDER BY group_order");
+      
+      $temps = "
       <li>
          <a class='icon no_link' id='templates' href='#'>Template Options</a>
          <div class='sub'>
             <ul>
                <li><strong>Template Manager</strong></li>
-               <li><a href='".CP_URL."?C=templates'>Manage Templates</a></li>
+               <li><a href='".CP_URL."?C=templates'>Manage Templates</a>
+                  <div class='sub2'>
+                     <ul>
+                        <li><strong>Template Groups</strong></li>
+                        ";
+      foreach ($groups->result as $group) {
+         $temps_in_group = $DB->query("SELECT template_id,template_name,group_id FROM exp_templates WHERE group_id = '".$group['group_id']."'");
+         
+         $temps .= "<li><a href='".CP_URL."?C=templates&M=edit_templates&tgpref=".$group['group_id']."'>".$group['group_name']." - ".$group['group_id']."</a>";
+         if ($temps_in_group->num_rows > 0) {
+            $temps .= "<div class='sub2'>
+                           <ul>
+                              <li><strong>Templates</strong></li>
+                                 ";
+            foreach ($temps_in_group->result as $template) {
+               $temps .= "<li><a href='".CP_URL."?C=templates&M=edit_template&tgpref=".$template['group_id']."&id=".$template['template_id']."'>".$template['template_name']."</a></li>
+                                 ";
+            }
+            $temps.="</ul>
+                        <span class='arrow'>
+                     </div>";
+         }
+         $temps .= "</li>";
+      }
+                              
+      $temps .= "</ul>
+                     <span class='arrow'></span>
+                  </div>
+               </li>   
                <li><a href='".CP_URL."?C=templates&amp;M=template_prefs_manager'>Manage Preferences</a></li>
                <li><a href='".CP_URL."?C=templates&amp;M=global_variables'>Global Variables</a></li>
             </ul>
             <span class='arrow'></span>
          </div>
       </li>";
+      
+      return $temps;
    }
 
 

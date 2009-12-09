@@ -51,11 +51,12 @@ jQuery(document).ready(function(){
         return false;
     });
     jQuery('#move_bot').click(function(){
-        var container = jQuery(this).parent().parent().parent().parent().parent().parent().parent();
-        jQuery("#erdtb_bot").removeClass('inactive');
-        jQuery('#er_developer_toolbar').clone().prependTo('#erdtb_bot');
-        jQuery(container).empty().addClass('inactive');
-        tb_hor();
+        alert('test');
+        // var container = jQuery(this).parent().parent().parent().parent().parent().parent().parent();
+        // jQuery("#erdtb_bot").removeClass('inactive');
+        // jQuery('#er_developer_toolbar').clone().prependTo('#erdtb_bot');
+        // jQuery(container).empty().addClass('inactive');
+        // tb_hor();
         return false;
     });
     jQuery('#move_right').click(function(){

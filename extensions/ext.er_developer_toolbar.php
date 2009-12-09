@@ -1,5 +1,5 @@
 <?php
-
+ini_set('error_reporting',E_ALL);
 /**
  * ER Developer Toolbar
  * 
@@ -20,13 +20,13 @@ if ( ! defined('EXT')) exit('Invalid file request');
 class Er_developer_toolbar
 {
    
-   var $settings = array();
+   private $settings = array();
 
-   var $name = 'ER Developer Toolbar';
-   var $version = '1.0.1';
-   var $description = 'Adds a developer toolbar as a global variable available within your templates';
-   var $settings_exist = 'y';
-   var $docs_url = '';
+   private $name = 'ER Developer Toolbar';
+   public $version = '1.0.1';
+   public $description = 'Adds a developer toolbar as a global variable available within your templates';
+   public $settings_exist = 'y';
+   public $docs_url = '';
 
 
    /**
@@ -35,7 +35,7 @@ class Er_developer_toolbar
    * @see __construct()
    */
 
-   function Er_developer_toolbar($settings='')
+   public function Er_developer_toolbar($settings='')
    {
       $this->__construct($settings);
    }
@@ -52,7 +52,7 @@ class Er_developer_toolbar
       
       if(isset($SESS->cache['er']) === FALSE) { $SESS->cache['er'] = array(); }
 
-		$this->settings = $this->_get_settings();
+		$this->settings = $this->get_settings();
    }
 
 
@@ -61,7 +61,7 @@ class Er_developer_toolbar
    *
    * @return array
    */
-   function _get_settings($force_refresh = FALSE, $return_all = FALSE)
+   public function get_settings($force_refresh = FALSE, $return_all = FALSE)
 	{
 
 		global $SESS, $DB, $REGX, $LANG, $PREFS;
@@ -100,7 +100,7 @@ class Er_developer_toolbar
     * @param      $current is the current settings array
     * @return     string
     */
-   function settings_form($current)
+   public function settings_form($current)
    {
       global $DB, $DSP, $LANG, $IN, $PREFS, $SESS;
 
@@ -470,7 +470,7 @@ class Er_developer_toolbar
 	 * Save Settings
 	 * 
 	 */
-	function save_settings()
+	public function save_settings()
 	{
 		// make somethings global
 		global $DB, $IN, $PREFS, $REGX, $SESS;
@@ -485,7 +485,7 @@ class Er_developer_toolbar
 		
 		// load the settings from cache or DB
 		// force a refresh and return the full site settings
-		$settings = $this->_get_settings(TRUE, TRUE);
+		$settings = $this->get_settings(TRUE, TRUE);
 
 		// add the posted values to the settings
 		$settings[$PREFS->ini('site_id')] = $REGX->xss_clean($_POST);
@@ -501,7 +501,7 @@ class Er_developer_toolbar
    *
    * @return      bool
    */
-   function activate_extension()
+   public function activate_extension()
    {
       global $DB, $PREFS;
       
@@ -578,7 +578,7 @@ class Er_developer_toolbar
     * @param string
     * @return bool
     **/
-   function update_extension($current='')
+   public function update_extension($current='')
    {
        global $DB;
 
@@ -597,7 +597,7 @@ class Er_developer_toolbar
    /**
    * Disables the extension the extension and deletes settings from DB
    */
-   function disable_extension()
+   public function disable_extension()
    {
        global $DB, $SESS;
        unset($SESS->cache['er']);
@@ -646,7 +646,7 @@ class Er_developer_toolbar
     *
     * @param object     the session object
     **/
-   function sessions_end( $s )
+   public function sessions_end( $s )
    {
       global $EXT, $IN, $PREFS;
       
@@ -752,7 +752,7 @@ class Er_developer_toolbar
       }
       
 
-      $IN->global_vars['er_developer_toolbar'] = $this->_create_toolbar($user_access);
+      $IN->global_vars['er_developer_toolbar'] = $this->create_toolbar($user_access);
       
    }
    
@@ -764,7 +764,7 @@ class Er_developer_toolbar
     * @access Private
     * @return string
     */
-   function _create_mod_menu($user_group_id)
+   private function create_mod_menu($user_group_id)
    {
       global $DB, $SESS;
       $mod_menu = '';
@@ -826,7 +826,7 @@ class Er_developer_toolbar
     * @access Private
     * @return string
     */
-   function _create_ext_menu()
+   private function create_ext_menu()
    {
       global $DB;
       
@@ -880,7 +880,7 @@ class Er_developer_toolbar
     * @access Private
     * @return string
     */
-   function _create_pi_menu()
+   private function create_pi_menu()
    {
       global $FNS;
       
@@ -928,7 +928,7 @@ class Er_developer_toolbar
     * @access Private
     * @return string
     */
-   function _create_toolbar($user_access)
+   private function create_toolbar($user_access)
    {
       global $DB, $DSP, $PREFS, $SESS;
       
@@ -953,7 +953,7 @@ class Er_developer_toolbar
 ";
 
       // Not quite ready for prime time...
-      $toolbar .= $this->_piece_move();
+      $toolbar .= $this->piece_move();
 
       $toolbar .= "
       
@@ -961,7 +961,7 @@ class Er_developer_toolbar
 
    ";
    
-      $toolbar .= $this->_piece_divider('front');
+      $toolbar .= $this->piece_divider('front');
    
    
       
@@ -970,25 +970,25 @@ class Er_developer_toolbar
    <ul>";
    
    
-      $toolbar .= $this->_piece_home();
-      $toolbar .= $this->_piece_accounts();
-      $toolbar .= $this->_piece_logout();
+      $toolbar .= $this->piece_home();
+      $toolbar .= $this->piece_accounts();
+      $toolbar .= $this->piece_logout();
       
 
-      $toolbar .= $this->_piece_divider();
+      $toolbar .= $this->piece_divider();
 
       
-      $toolbar .= $this->_piece_statuses();
-      $toolbar .= $this->_piece_templates();
-      $toolbar .= $this->_piece_cache();
+      $toolbar .= $this->piece_statuses();
+      $toolbar .= $this->piece_templates();
+      $toolbar .= $this->piece_cache();
       
    
-      $toolbar .= $this->_piece_divider();
+      $toolbar .= $this->piece_divider();
    
       
-      $toolbar .= $this->_piece_addons($user_access);      
-      $toolbar .= $this->_piece_temp_debug();
-      $toolbar .= $this->_piece_sql_queries();
+      $toolbar .= $this->piece_addons($user_access);      
+      $toolbar .= $this->piece_temp_debug();
+      $toolbar .= $this->piece_sql_queries();
       
       
       // this is the magic closing UL
@@ -996,7 +996,7 @@ class Er_developer_toolbar
    </ul>";
    
       
-      $toolbar .= $this->_piece_load_stats();
+      $toolbar .= $this->piece_load_stats();
    
    
       // And now the closing div tag for the entire toolbar
@@ -1014,7 +1014,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_move()
+   private function piece_move()
    {
       return "
       <ul>
@@ -1045,7 +1045,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_home()
+   private function piece_home()
    {
       return "
       <li>
@@ -1072,7 +1072,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_accounts()
+   private function piece_accounts()
    {
       return "
       <li>
@@ -1099,7 +1099,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_logout()
+   private function piece_logout()
    {
       return "
       <li>
@@ -1124,7 +1124,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_statuses()
+   private function piece_statuses()
    {
       global $PREFS;
       
@@ -1182,7 +1182,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_templates()
+   private function piece_templates()
    {
       global $DB;
       
@@ -1194,19 +1194,19 @@ class Er_developer_toolbar
          <div class='sub'>
             <ul>
                <li><strong>Template Manager</strong></li>
-               <li><a href='".CP_URL."?C=templates'>Manage Templates</a>
+               <li class='more'><a href='".CP_URL."?C=templates'>Manage Templates</a>
                   <div class='sub2'>
                      <ul>
-                        <li><strong>Template Groups</strong></li>
+                        <li><strong>View Template Groups</strong></li>
                         ";
       foreach ($groups->result as $group) {
          $temps_in_group = $DB->query("SELECT template_id,template_name,group_id FROM exp_templates WHERE group_id = '".$group['group_id']."'");
          
-         $temps .= "<li><a href='".CP_URL."?C=templates&M=edit_templates&tgpref=".$group['group_id']."'>".$group['group_name']." - ".$group['group_id']."</a>";
+         $temps .= "<li class='more'><a href='".CP_URL."?C=templates&M=edit_templates&tgpref=".$group['group_id']."'>".$group['group_name']."</a>";
          if ($temps_in_group->num_rows > 0) {
             $temps .= "<div class='sub2'>
                            <ul>
-                              <li><strong>Templates</strong></li>
+                              <li><strong>Edit Templates</strong></li>
                                  ";
             foreach ($temps_in_group->result as $template) {
                $temps .= "<li><a href='".CP_URL."?C=templates&M=edit_template&tgpref=".$template['group_id']."&id=".$template['template_id']."'>".$template['template_name']."</a></li>
@@ -1244,7 +1244,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_cache()
+   private function piece_cache()
    {
       
       // Not quite ready for prime time            
@@ -1279,7 +1279,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_addons($user_access)
+   private function piece_addons($user_access)
    {
       $addons = '';
       
@@ -1292,26 +1292,26 @@ class Er_developer_toolbar
 
 
             $addons .= "
-                     <li>
+                     <li class='more'>
                      <a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a>
       ";
-            $addons .= $this->_create_ext_menu();
+            $addons .= $this->create_ext_menu();
 
             $addons .="
                      </li>
-                     <li>
+                     <li class='more'>
                         <a id='plugins' href='".CP_URL."?C=admin&amp;M=utilities&amp;P=plugin_manager'>Plugins</a>
       ";
-               $addons .= $this->_create_pi_menu();
+               $addons .= $this->create_pi_menu();
 
                $addons .= "
                      </li>";
 
                $addons .= "
-                     <li>
+                     <li class='more'>
                         <a id='modules' href='".CP_URL."?C=modules'>Modules</a>
       ";
-               $addons .= $this->_create_mod_menu($user_access['group_id']);
+               $addons .= $this->create_mod_menu($user_access['group_id']);
 
                $addons .= "
                         </li>";
@@ -1335,7 +1335,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_temp_debug()
+   private function piece_temp_debug()
    {
       global $PREFS;
       $template_debugging = ($PREFS->core_ini['template_debugging'] == 'y') ? 'on' : 'off' ;
@@ -1362,7 +1362,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_sql_queries()
+   private function piece_sql_queries()
    {
       global $PREFS;
       $show_queries = ($PREFS->core_ini['show_queries'] == 'y') ? 'on' : 'off' ;
@@ -1389,7 +1389,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_load_stats()
+   private function piece_load_stats()
    {
       return "
       
@@ -1421,7 +1421,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   function _piece_divider($position = 'standard')
+   private function piece_divider($position = 'standard')
    {
       $divider = '';
       
@@ -1454,7 +1454,7 @@ class Er_developer_toolbar
     * @return  array The new source list
     * @since   version 1.0.0
     */
-   function lg_addon_update_register_source($sources)
+   public function lg_addon_update_register_source($sources)
    {
        global $EXT;
        // -- Check if we're not the only one using this hook
@@ -1487,7 +1487,7 @@ class Er_developer_toolbar
     * @return   array The new addon list
     * @since    version 1.0.0
     */
-   function lg_addon_update_register_addon($addons)
+   public function lg_addon_update_register_addon($addons)
    {
    	global $EXT;
    	// -- Check if we're not the only one using this hook

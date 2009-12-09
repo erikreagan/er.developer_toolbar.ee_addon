@@ -27,8 +27,8 @@
 .erdtb_hor #er_developer_toolbar ul#toolbar_calc{float:right;}
 .erdtb_hor #er_developer_toolbar ul#toolbar_calc li{float:left;margin-left:20px;}
 .erdtb_hor #er_developer_toolbar ul#clock{position:absolute;right:1%;}
-.erdtb_hor #er_developer_toolbar ul#clock > li:hover div.sub{position:absolute;left:-162px;text-align:right;}
-.erdtb_hor #er_developer_toolbar ul#clock span.arrow{left:146px;}
+.erdtb_hor #er_developer_toolbar ul#clock > li:hover div.sub{position:absolute;left:-182px;text-align:right;}
+.erdtb_hor #er_developer_toolbar ul#clock span.arrow{left:186px;}
 .erdtb_hor #er_developer_toolbar ul > li > div.sub li:hover > .sub2{display:block;position:absolute;padding-left:47px;left:141px;}
 .erdtb_hor #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{display:block;width:10px !important;height:17px !important;background:url(sprite.png) -173px -27px no-repeat !important;position:absolute;left:39px !important;}
 
@@ -51,6 +51,7 @@
 #erdtb_right #er_developer_toolbar #clock{right:4px;}
 #erdtb_right #er_developer_toolbar ul > li > div.sub li:hover > .sub2{padding-right:19px;right:160px;}
 #erdtb_right #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{background:url(sprite.png) -152px -27px no-repeat !important;right:12px;}
+#erdtb_right #er_developer_toolbar .more { background-position: left -72px; padding-left: 10px; }
 
 
 
@@ -77,6 +78,8 @@
 ER Developer Toolbar CSS
 *******************************/
 #er_developer_toolbar {font:12px Arial,sans-serif;}
+#er_developer_toolbar .more { background-image: url(arrows.png); background-repeat: no-repeat; }
+#er_developer_toolbar .more { background-position: right -48px; }
 #er_developer_toolbar a,#er_developer_toolbar a:visited{display:block;color:#0f2f5b;text-decoration:none;}
 #er_developer_toolbar a:hover{text-decoration:underline;}
 #er_developer_toolbar a:active{outline:none;}

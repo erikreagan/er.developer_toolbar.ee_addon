@@ -1,5 +1,5 @@
 <?php
-ini_set('error_reporting',E_ALL);
+// ini_set('error_reporting',E_ALL);
 /**
  * ER Developer Toolbar
  * 
@@ -7,32 +7,37 @@ ini_set('error_reporting',E_ALL);
  * /system/extensions/ folder in your ExpressionEngine installation.
  *
  * @package ERDeveloperToolbar
- * @version 1.0.1
+ * @version 1.1.0
  * @author Erik Reagan http://erikreagan.com
  * @copyright Copyright (c) 2009 Erik Reagan
- * @see http://erikreagan.com/projects/er_developer_toolbar/
+ * @see http://erikreagan.com/projects/er-developer-toolbar/
  */
 
 
 if ( ! defined('EXT')) exit('Invalid file request');
 
 
+define('ER_DTB_name', 'ER Developer Toolbar');
+define('ER_DTB_version', '1.1.0');
+define('ER_DTB_underscores', 'Er_developer_toolbar');
+
+
 class Er_developer_toolbar
 {
    
-   private $settings = array();
-
-   private $name = 'ER Developer Toolbar';
-   public $version = '1.0.1';
-   public $description = 'Adds a developer toolbar as a global variable available within your templates';
-   public $settings_exist = 'y';
-   public $docs_url = '';
+   private  $settings       = array();
+   private  $name           = ER_DTB_name;
+   public   $version        = ER_DTB_version;
+   public   $description    = 'Adds a developer toolbar as a global variable available within your templates';
+   public   $settings_exist = 'y';
+   public   $docs_url       = 'http://erikreagan.com/d/toolbar/';
 
 
    /**
    * PHP4 Constructor
    *
-   * @see __construct()
+   * @access   public
+   * @see      __construct()
    */
 
    public function Er_developer_toolbar($settings='')
@@ -44,9 +49,10 @@ class Er_developer_toolbar
    /**
    * PHP 5 Constructor
    *
-   * @param array|string  Extension settings associative array or an empty string
+   * @param    array|string  Extension settings associative array or an empty string
+   * @access   public
    */
-   function __construct($settings='')
+   public function __construct($settings='')
    {
       global $IN, $SESS;
       
@@ -59,7 +65,8 @@ class Er_developer_toolbar
    /**
    * Configuration for the extension settings page
    *
-   * @return array
+   * @access   public
+   * @return   array
    */
    public function get_settings($force_refresh = FALSE, $return_all = FALSE)
 	{
@@ -70,24 +77,25 @@ class Er_developer_toolbar
 		$settings = FALSE;
 		
 		// Get the settings for the extension
-		if(isset($SESS->cache['er']['Er_developer_toolbar']['settings']) === FALSE || $force_refresh === TRUE)
+		if(isset($SESS->cache['er'][ER_DTB_underscores]['settings']) === FALSE || $force_refresh === TRUE)
 		{
 			// check the db for extension settings
-			$query = $DB->query("SELECT settings FROM exp_extensions WHERE enabled = 'y' AND class = 'Er_developer_toolbar' LIMIT 1");
+			$query = $DB->query("SELECT settings FROM exp_extensions WHERE enabled = 'y' AND class = '".ER_DTB_underscores."' LIMIT 1");
 
 			// if there is a row and the row has settings
 			if ($query->num_rows > 0 && $query->row['settings'] != '')
 			{
 				// save them to the cache
-				$SESS->cache['er']['Er_developer_toolbar']['settings'] = $REGX->array_stripslashes(unserialize($query->row['settings']));
+				$SESS->cache['er'][ER_DTB_underscores]['settings'] = $REGX->array_stripslashes(unserialize($query->row['settings']));
 			}
 		}
 		
 		// check to see if the session has been set
 		// if it has, return the session
 		// if not, return false
-		if(empty($SESS->cache['er']['Er_developer_toolbar']['settings']) !== TRUE)
-		{			$settings = ($return_all === TRUE) ?  $SESS->cache['er']['Er_developer_toolbar']['settings'] : $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
+		if(empty($SESS->cache['er'][ER_DTB_underscores]['settings']) !== TRUE)
+		{
+		   $settings = ($return_all === TRUE) ?  $SESS->cache['er'][ER_DTB_underscores]['settings'] : $SESS->cache['er'][ER_DTB_underscores]['settings'][$PREFS->ini('site_id')];
 		}
 
 		return $settings;
@@ -98,6 +106,7 @@ class Er_developer_toolbar
     * Customize the settings form display
     *
     * @param      $current is the current settings array
+    * @access     public
     * @return     string
     */
    public function settings_form($current)
@@ -105,7 +114,7 @@ class Er_developer_toolbar
       global $DB, $DSP, $LANG, $IN, $PREFS, $SESS;
 
       // Local storage for our settings
-		$s = $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
+		$s = $SESS->cache['er'][ER_DTB_underscores]['settings'][$PREFS->ini('site_id')];
       $s['check_for_extension_updates'] = (array_key_exists('check_for_extension_updates',$s)) ? $s['check_for_extension_updates'] : '' ;
       // Get my gravatar
       $grav_url = "http://www.gravatar.com/avatar.php?gravatar_id=".md5(strtolower('erik@erikreagan.com'))."&amp;default=".urlencode('http://erikreagan.com/gravatar.jpg')."&amp;size=70";
@@ -252,7 +261,7 @@ class Er_developer_toolbar
 		$b .= $DSP->div('box')
 		   . '<div style="width:auto;overflow:auto;">
                <img src="'.$grav_url.'" alt="Erik Reagan" height="70" width="70" style="border: 1px solid #555;padding: 1px;float:right;"/>'
-               . $DSP->heading($LANG->line('toolbar_name') . " &nbsp;&nbsp;<small>{$this->version}</small>").'<br/>'
+               . $DSP->heading($LANG->line('toolbar_name') . " &nbsp;&nbsp;<small>{".ER_DTB_version."}</small>").'<br/>'
                . '<p>by '.$DSP->anchor('http://erikreagan.com','Erik Reagan').' of '.$DSP->anchor('http://idealdesignfirm.com','Ideal Design Firm, LLC').'<br/>
                Contact me at '. $DSP->mailto('erik@erikreagan.com','erik@erikreagan.com').'</p>'
          . '</div>'
@@ -264,7 +273,7 @@ class Er_developer_toolbar
                      'action' => 'C=admin'.AMP.'M=utilities'.AMP.'P=save_extension_settings'
                   ),
                array(
-                     'name' => strtolower('Er_developer_toolbar')
+                     'name' => strtolower(ER_DTB_underscores)
                   )
             );
             
@@ -305,10 +314,10 @@ class Er_developer_toolbar
          . $DSP->input_select_header('position','','','250px');
          
       $position_optoins = array(
-            'top hor'    => "Top",
-            'right vert' => "Right",
-            'bot hor'    => "Bottom",
-            'left vert'  =>"Left"
+            'top'   => "Top",
+            'right' => "Right",
+            'bot'   => "Bottom",
+            'left'  => "Left"
          );
       
    foreach ($position_optoins as $css_class => $option_text)
@@ -460,7 +469,7 @@ class Er_developer_toolbar
          . $DSP->table_c();
       
       $DSP->set_return_data($LANG->line('toolbar_name').' | '.$LANG->line('extension_settings'),$b,$LANG->line('toolbar_name'));
-      $DSP->right_crumb('Documentation','http://erikreagan.com/');
+      $DSP->right_crumb('Documentation',$this->docs_url);
    
    }
    
@@ -469,6 +478,7 @@ class Er_developer_toolbar
    /**
 	 * Save Settings
 	 * 
+	 * @access     public
 	 */
 	public function save_settings()
 	{
@@ -491,7 +501,7 @@ class Er_developer_toolbar
 		$settings[$PREFS->ini('site_id')] = $REGX->xss_clean($_POST);
 
 		// update the settings
-		$query = $DB->query($sql = "UPDATE exp_extensions SET settings = '" . addslashes(serialize($settings)) . "' WHERE class = 'Er_developer_toolbar'");
+		$query = $DB->query($sql = "UPDATE exp_extensions SET settings = '" . addslashes(serialize($settings)) . "' WHERE class = '".ER_DTB_underscores."'");
 	}
 	
 	
@@ -499,6 +509,7 @@ class Er_developer_toolbar
    /**
    * Activates the extension
    *
+   * @access      public
    * @return      bool
    */
    public function activate_extension()
@@ -512,7 +523,7 @@ class Er_developer_toolbar
       $default_settings = array(
             'groups'                      => array('1'),
             'new_window'                  => 0,
-            'position'                    => 'top hor',
+            'position'                    => 'top',
             'tooltip_text'                => '',
             'check_for_extension_updates' => 1,
             'horizontal_logo'             => '',
@@ -555,7 +566,7 @@ class Er_developer_toolbar
                'hook'         => $hook,
                'settings'     => serialize($settings),
                'priority'     => 10,
-               'version'      => $this->version,
+               'version'      => ER_DTB_version,
                'enabled'      => "y"
             )
          );
@@ -575,83 +586,49 @@ class Er_developer_toolbar
    /**
     * Update the extension
     *
-    * @param string
-    * @return bool
-    **/
+    * @param      string
+    * @access     public
+    * @return     bool
+    */
    public function update_extension($current='')
    {
        global $DB;
-
-       if ($current == '' OR $current == $this->version)
+       
+       if ($current == '' OR $current == ER_DTB_version)
        {
            return FALSE;
        }
-
+       
        $DB->query("UPDATE exp_extensions 
-                   SET version = '".$DB->escape_str($this->version)."' 
-                   WHERE class = 'Er_developer_toolbar'");
+                   SET version = '".$DB->escape_str(ER_DTB_version)."' 
+                   WHERE class = '".ER_DTB_underscores."'");
    }
    
    
    
    /**
-   * Disables the extension the extension and deletes settings from DB
-   */
+    * Disables the extension the extension and deletes settings from DB
+    */
    public function disable_extension()
    {
        global $DB, $SESS;
        unset($SESS->cache['er']);
-       $DB->query("DELETE FROM exp_extensions WHERE class = 'Er_developer_toolbar'");
+       $DB->query("DELETE FROM exp_extensions WHERE class = '".ER_DTB_underscores."'");
    }
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   /**
-    *                              
-    *                              
-    *                              
-    *                              
-    *                              
-    *                              
-    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
-    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
-    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
-    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
-    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
-    *       THE FUNCTIONS BELOW ARE FOR BUILDING THE TOOLBAR
-    *                              
-    *                              
-    *                              
-    *                              
-    *                              
-    *                              
-    *
-    **/
-    
-    
-    
-    
-    
     
     
    
    /**
     * Sessions End
     *
-    * @param object     the session object
-    **/
+    * @param   object     $s    the session object
+    * @access  public
+    */
    public function sessions_end( $s )
    {
       global $EXT, $IN, $PREFS;
       
-      $theme_path = (substr($PREFS->core_ini['theme_folder_url'], strlen($PREFS->core_ini['theme_folder_url']) - 1) != '/') ? $PREFS->core_ini['theme_folder_url'].'/' : $PREFS->core_ini['theme_folder_url'] ;
-
+      // If our logged user isn't in a permitted member group then we can just stop here
       if ( ! in_array($s->userdata['group_id'], $this->settings['groups']) )
       {
          $IN->global_vars['er_developer_toolbar']      = '';
@@ -660,24 +637,35 @@ class Er_developer_toolbar
          return;
       }
 
-      
-      $user_access = array(
-         'group_id' => $s->userdata['group_id'],
-         'can_access_cp' => $s->userdata['can_access_cp'],
-         'can_access_admin' => $s->userdata['can_access_admin'],
-         'can_access_design' => $s->userdata['can_access_design'],
-         'can_access_modules' => $s->userdata['can_access_modules'],
-         'can_access_edit' => $s->userdata['can_access_edit'],
-         'can_admin_utilities' => $s->userdata['can_admin_utilities'],
-         'can_admin_preferences' => $s->userdata['can_admin_preferences'],
-         'can_admin_members' => $s->userdata['can_admin_members']
-         );      
-      
+
+      // Get the returned sessions_end data from any other extensions using this hook
       if ($EXT->last_call !== FALSE)
 		{
 			$s =& $EXT->last_call;
 		}
-      
+
+
+      // Make sure our theme_folder_url has a trailing slash
+      $theme_path = (substr($PREFS->ini('theme_folder_url'),-1,1) != '/') ? $PREFS->ini('theme_folder_url').'/' : $PREFS->ini('theme_folder_url') ;
+
+
+      // Since session data isn't available in our other functions in this class we will pass along this info from our session
+      $is_super_admin = ($s->userdata['group_id'] == '1') ? TRUE : FALSE ;
+      $user_access = array(
+         'is_super_admin'        => $is_super_admin,
+         'group_id'              => $s->userdata['group_id'],
+         'can_access_cp'         => $s->userdata['can_access_cp'],
+         'can_access_admin'      => $s->userdata['can_access_admin'],
+         'can_access_design'     => $s->userdata['can_access_design'],
+         'can_access_modules'    => $s->userdata['can_access_modules'],
+         'can_access_edit'       => $s->userdata['can_access_edit'],
+         'can_admin_utilities'   => $s->userdata['can_admin_utilities'],
+         'can_admin_preferences' => $s->userdata['can_admin_preferences'],
+         'can_admin_templates'   => $s->userdata['can_admin_templates'],
+         'can_admin_members'     => $s->userdata['can_admin_members']
+         );      
+
+      // start building our global variables
       $IN->global_vars['er_developer_toolbar_head'] = "
    <link rel='stylesheet' href='".$theme_path."toolbar/style.css' type='text/css' title='no title' charset='utf-8' />";      
       
@@ -761,15 +749,15 @@ class Er_developer_toolbar
    /**
     * Create module sub-menu
     * 
-    * @access Private
-    * @return string
+    * @param      user member group ID
+    * @access     private
+    * @since      1.0.1
+    * @return     string
     */
-   private function create_mod_menu($user_group_id)
+   private function create_mod_menu($user_group_id = NULL)
    {
       global $DB, $SESS;
       $mod_menu = '';
-      
-      // $extra_sql = ($user_group_id != '1') ? "AND exp_module_member_groups.group_id = $user_group_id" : "" ;
       
       if ($user_group_id == '1')
       {
@@ -823,8 +811,9 @@ class Er_developer_toolbar
    /**
     * Create extensions sub-menu
     * 
-    * @access Private
-    * @return string
+    * @access     private
+    * @since      1.0.0
+    * @return     string
     */
    private function create_ext_menu()
    {
@@ -877,8 +866,9 @@ class Er_developer_toolbar
    /**
     * Create plugin sub-menu
     * 
-    * @access Private
-    * @return string
+    * @access     private
+    * @since      1.0.0
+    * @return     string
     */
    private function create_pi_menu()
    {
@@ -925,19 +915,41 @@ class Er_developer_toolbar
    /**
     * Create Developer toolbar
     * 
-    * @access Private
-    * @return string
+    * @param      user access
+    * @access     private
+    * @return     string
     */
    private function create_toolbar($user_access)
    {
       global $DB, $DSP, $PREFS, $SESS;
       
       // Get our settings from the cache
-      $s = $SESS->cache['er']['Er_developer_toolbar']['settings'][$PREFS->ini('site_id')];
+      $s = $SESS->cache['er'][ER_DTB_underscores]['settings'][$PREFS->ini('site_id')];
       define('CP_URL',$PREFS->core_ini['cp_url']);
       
       $toolbar = '';
       
+      switch ($s['position']) {
+         case 'top':
+            $toolbar_class = 'hor';
+            break;
+            
+         case 'bottom':
+            $toolbar_class = 'hor';
+            break;
+            
+         case 'left':
+            $toolbar_class = 'vert';
+            break;
+            
+         case 'right':
+            $toolbar_class = 'vert';
+            break;
+   
+         default:
+            $toolbar_class = 'hor';
+            break;
+      }
    
       $tooltip_text = ($s['tooltip_text'] == '') ? 'ER Developer Toolbar: by Erik Reagan' : $s['tooltip_text'] ;
    
@@ -945,15 +957,8 @@ class Er_developer_toolbar
       
       // Build the toollbar
       $toolbar .= "
-      <div class='er_developer_toolbar_container erdtb_hor inactive' id='erdtb_top'></div>
-      <div class='er_developer_toolbar_container erdtb_vert inactive' id='erdtb_left'></div>
-      <div class='er_developer_toolbar_container erdtb_vert inactive' id='erdtb_right'></div>
-      <div class='er_developer_toolbar_container erdtb_hor' id='erdtb_bottom'>
-<div id='er_developer_toolbar'>
-";
-
-      // Not quite ready for prime time...
-      $toolbar .= $this->piece_move();
+      <div class='er_developer_toolbar_container erdtb_".$toolbar_class."' id='erdtb_".$s['position']."'>
+<div id='er_developer_toolbar'>";
 
       $toolbar .= "
       
@@ -961,7 +966,7 @@ class Er_developer_toolbar
 
    ";
    
-      $toolbar .= $this->piece_divider('front');
+      $toolbar .= $this->piece_divider($user_access,'front');
    
    
       
@@ -970,25 +975,42 @@ class Er_developer_toolbar
    <ul>";
    
    
-      $toolbar .= $this->piece_home();
-      $toolbar .= $this->piece_accounts();
+      $toolbar .= $this->piece_home($user_access);
+      $toolbar .= $this->piece_accounts($user_access);
       $toolbar .= $this->piece_logout();
       
 
-      $toolbar .= $this->piece_divider();
+      $toolbar .= $this->piece_divider($user_access);
 
       
-      $toolbar .= $this->piece_statuses();
-      $toolbar .= $this->piece_templates();
-      $toolbar .= $this->piece_cache();
+      if ($user_access['is_super_admin'] || ($user_access['can_access_cp'] == 'y' && $user_access['can_access_admin'] == 'y' && $user_access['can_admin_preferences'] == 'y'))
+      {
+         $toolbar .= $this->piece_statuses($user_access);
+      }
+      if ($user_access['is_super_admin'] || ($user_access['can_access_cp'] == 'y' && $user_access['can_access_design'] == 'y' && $user_access['can_admin_templates'] == 'y'))
+      {
+         $toolbar .= $this->piece_templates($user_access);
+      }
+      if ($user_access['is_super_admin'] || $user_access['can_admin_utilities'] == 'y')
+      {
+         $toolbar .= $this->piece_cache($user_access);
+      }
+      if ($user_access['is_super_admin'] || ($user_access['can_admin_templates'] == 'y' || $user_access['can_admin_utilities'] == 'y' || ($user_access['can_admin_preferences'] == 'y' && $user_access['can_access_admin'] == 'y')))
+      {
+         $toolbar .= $this->piece_divider($user_access);
+      }
       
-   
-      $toolbar .= $this->piece_divider();
-   
+      if ($user_access['is_super_admin'] || (($user_access['can_access_admin'] == 'y' && $user_access['can_admin_utilities'] == 'y') || $user_access['can_access_modules'] == 'y'))
+      {
+         $toolbar .= $this->piece_addons($user_access);
+      }
       
-      $toolbar .= $this->piece_addons($user_access);      
-      $toolbar .= $this->piece_temp_debug();
-      $toolbar .= $this->piece_sql_queries();
+      if ($user_access['is_super_admin'] || $user_access['can_admin_preferences'] == 'y')
+      {
+         $toolbar .= $this->piece_temp_debug();
+         $toolbar .= $this->piece_sql_queries();
+      }
+      
       
       
       // this is the magic closing UL
@@ -1011,10 +1033,12 @@ class Er_developer_toolbar
    /**
     * Add move tool
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_move()
+   private function piece_move($access = NULL)
    {
       return "
       <ul>
@@ -1042,23 +1066,32 @@ class Er_developer_toolbar
    /**
     * Add home links
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_home()
+   private function piece_home($access = NULL)
    {
-      return "
+      $home = "
       <li>
          <a class='icon no_link' id='home' href='#'>CP Home</a>
          <div class='sub'>
             <ul>
                <li><strong>Home Page</strong></li>
                <li><a class='self' href='{site_url}'>{site_name} Home Page</a></li>
-               <li><a href='".CP_URL."'>Control Panel Home Page</a></li>
-            </ul>
+               ";
+      if ($access['is_super_admin'] || $access['can_access_cp'] == 'y')
+      {
+         $home .= "<li><a href='".CP_URL."'>Control Panel Home Page</a></li>
+               ";  
+      }
+      $home .= "</ul>
             <span class='arrow'></span>
          </div>
       </li>";
+      
+      return $home;
    }
 
 
@@ -1069,24 +1102,36 @@ class Er_developer_toolbar
    /**
     * Add account links
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_accounts()
+   private function piece_accounts($access = NULL)
    {
-      return "
+      $accounts = "
       <li>
          <a class='icon no_link' id='account' href='#'>Member Accounts</a>
          <div class='sub'>
             <ul>
                <li><strong>Member Accounts</strong></li>
                <li><a href='".CP_URL."?C=myaccount'>My Account</a></li>
+               ";
+      if ($access['is_super_admin'] || ($access['can_access_cp'] == 'y' && $access['can_admin_members'] == 'y'))
+      {
+         $accounts .= "
                <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=mbr_group_manager'>Member Groups</a></li>
                <li><a href='".CP_URL."?C=admin&amp;M=members&amp;P=view_members'>Member List</a></li>
+               ";
+      }
+      $accounts .= "
             </ul>
             <span class='arrow'></span>
          </div>
       </li>";
+      
+      return $accounts;
+      
    }
    
    
@@ -1097,6 +1142,7 @@ class Er_developer_toolbar
     * Add logout link
     *
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
    private function piece_logout()
@@ -1121,10 +1167,12 @@ class Er_developer_toolbar
    /**
     * Add status links
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_statuses()
+   private function piece_statuses($access = NULL)
    {
       global $PREFS;
       
@@ -1132,7 +1180,7 @@ class Er_developer_toolbar
       
       // hard coded some language lines because I couldn't get $LANG working...
       // will check back to fix later
-      switch ($PREFS->core_ini['debug'])
+      switch ($PREFS->ini('debug'))
       {
          case '1':
             $debug_status = 'on';
@@ -1179,14 +1227,26 @@ class Er_developer_toolbar
    /**
     * Add Template links
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_templates()
+   private function piece_templates($access = NULL)
    {
       global $DB;
       
-      $groups = $DB->query("SELECT group_id,site_id,group_name FROM exp_template_groups ORDER BY group_order");
+      if ($access['is_super_admin'])
+      {
+         $groups = $DB->query("SELECT group_id,site_id,group_name FROM exp_template_groups ORDER BY group_order");
+      } else {
+         $groups = $DB->query("SELECT tg.group_id,tg.site_id,tg.group_name
+                               FROM exp_template_groups AS tg
+                               JOIN exp_template_member_groups AS mg
+                               ON mg.template_group_id = tg.group_id
+                               WHERE mg.group_id = '".$access['group_id']."'
+                               ORDER BY tg.group_order");
+      }
       
       $temps = "
       <li>
@@ -1241,10 +1301,12 @@ class Er_developer_toolbar
    /**
     * Add Cache clearing links
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_cache()
+   private function piece_cache($access = NULL)
    {
       
       // Not quite ready for prime time            
@@ -1276,10 +1338,12 @@ class Er_developer_toolbar
    /**
     * Add Add-Ons direct links
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_addons($user_access)
+   private function piece_addons($access = NULL)
    {
       $addons = '';
       
@@ -1290,7 +1354,8 @@ class Er_developer_toolbar
                   <ul>
                      <li><strong>Add-ons</strong></li>";
 
-
+      if ($access['is_super_admin'] || ($access['can_access_admin'] == 'y' && $access['can_admin_utilities'] == 'y'))
+      {
             $addons .= "
                      <li class='more'>
                      <a id='extensions' href='".CP_URL."?C=admin&M=utilities&P=extensions_manager'>Extensions</a>
@@ -1306,16 +1371,18 @@ class Er_developer_toolbar
 
                $addons .= "
                      </li>";
-
+      }
+      if ($access['is_super_admin'] || ($access['can_access_modules']))
+      {
                $addons .= "
                      <li class='more'>
                         <a id='modules' href='".CP_URL."?C=modules'>Modules</a>
       ";
-               $addons .= $this->create_mod_menu($user_access['group_id']);
+               $addons .= $this->create_mod_menu($access['group_id']);
 
                $addons .= "
                         </li>";
-
+      }
                $addons .= "
                   </ul>
                   <span class='arrow'></span>
@@ -1332,10 +1399,12 @@ class Er_developer_toolbar
    /**
     * Add Template Debugging preference link
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_temp_debug()
+   private function piece_temp_debug($access = NULL)
    {
       global $PREFS;
       $template_debugging = ($PREFS->core_ini['template_debugging'] == 'y') ? 'on' : 'off' ;
@@ -1359,10 +1428,12 @@ class Er_developer_toolbar
    /**
     * Add SQL Query preference link
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_sql_queries()
+   private function piece_sql_queries($access = NULL)
    {
       global $PREFS;
       $show_queries = ($PREFS->core_ini['show_queries'] == 'y') ? 'on' : 'off' ;
@@ -1382,14 +1453,44 @@ class Er_developer_toolbar
    
    
    
+   /**
+    * Add links for adding EE elements like entries, templates, etc
+    *
+    * @param      user access
+    * @access     private
+    * @since      1.1.0
+    * @return     string
+    */
+   private function piece_add($access = NULL)
+   {
+      return "
+      <li>
+         <a class='icon' id='publish'>Add</a>
+         <div class='sub'>
+            <ul>
+               <li><strong>Add</strong></li>
+               <li><a href='#'>Coming........now you know it's on the way!</a></li>
+            </ul>
+            <span class='arrow'></span>
+         </div>
+      </li>";
+   }
+
+
+   
+   
+   
+   
    
    /**
     * Add load stats to toolbar
     *
+    * @param      user access
     * @access     private
+    * @since      1.1.0
     * @return     string
     */
-   private function piece_load_stats()
+   private function piece_load_stats($access = NULL)
    {
       return "
       
@@ -1421,7 +1522,7 @@ class Er_developer_toolbar
     * @access     private
     * @return     string
     */
-   private function piece_divider($position = 'standard')
+   private function piece_divider($access = NULL, $position = 'standard')
    {
       $divider = '';
       
@@ -1457,18 +1558,13 @@ class Er_developer_toolbar
    public function lg_addon_update_register_source($sources)
    {
        global $EXT;
-       // -- Check if we're not the only one using this hook
-       if($EXT->last_call !== FALSE)
-           $sources = $EXT->last_call;
+       
+       if ($EXT->last_call !== FALSE)
+       {
+          $sources = $EXT->last_call;
+       }
 
-       // add a new source
-       // must be in the following format:
-       /*
-       <versions>
-           <addon id='LG Addon Updater' version='2.0.0' last_updated="1218852797" docs_url="http://leevigraham.com/" />
-       </versions>
-       */
-       if($this->settings['check_for_extension_updates'] == 'yes')
+       if ($this->settings['check_for_extension_updates'] == 'yes')
        {
            $sources[] = 'http://erikreagan.com/ee-addons/versions.xml';
        }
@@ -1490,16 +1586,15 @@ class Er_developer_toolbar
    public function lg_addon_update_register_addon($addons)
    {
    	global $EXT;
-   	// -- Check if we're not the only one using this hook
-   	if($EXT->last_call !== FALSE)
-   		$addons = $EXT->last_call;
-
-   	// add a new addon
-   	// the key must match the id attribute in the source xml
-   	// the value must be the addons current version
-   	if($this->settings['check_for_extension_updates'] == 'yes')
+   	
+   	if ($EXT->last_call !== FALSE)
    	{
-   		$addons['ER Developer Toolbar'] = $this->version;
+   	   $addons = $EXT->last_call;
+   	}
+
+   	if ($this->settings['check_for_extension_updates'] == 'yes')
+   	{
+   		$addons[ER_DTB_name] = ER_DTB_version;
    	}
    	return $addons;
    }

@@ -86,12 +86,15 @@ The icons used in the toolbar are from the icon set _Fugue_ by Yusuke Kamiyamane
 
 h2. Change Log
 
-*+DATE: 1.1.0+*
+*+Dec 14, 2009: 1.1.0+*
 * Added fly-out menus for template groups
 * Added flu-out menus for editing templates
-* Re-factored some code in preparation of migrating add-on to module/EE2.x status
+* Re-factored some php in preparation for migrating add-on to module/EE2.x status
+* Re-factored toolbar/style.css
+* Updated toolbar/sprite.png
+* Updated docs link
 
-*+Nov 19, 2009: 1.0.1+*
+*Nov 19, 2009: 1.0.1*
 * Added fly-out menu for Modules for any modules with an CP backend (based on user permissions still)
 
 *Nov 11, 2009: 1.0.0*

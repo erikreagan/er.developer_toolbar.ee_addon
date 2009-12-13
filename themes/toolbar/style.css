@@ -8,11 +8,11 @@
 #erdtb_top #er_developer_toolbar ul > li > div.sub li:hover > .sub2{top:-33px;;}
 #erdtb_top #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{top:33px;}
 
-#erdtb_bottom {bottom:0px;border-bottom:none;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;-webkit-border-top-left-radius:5px;-webkit-border-top-right-radius:5px;}
-#erdtb_bottom #er_developer_toolbar ul > li:hover div.sub{bottom:21px;padding-bottom:12px;}
-#erdtb_bottom #er_developer_toolbar span.arrow{display:block;width:17px;height:10px;background:url(sprite.png) -107px -31px no-repeat;position:absolute;bottom:4px;left:33px;}
-#erdtb_bottom #er_developer_toolbar ul > li > div.sub li:hover > .sub2{bottom:-30px;}
-#erdtb_bottom #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{bottom:33px;}
+#erdtb_bot {bottom:0px;border-bottom:none;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;-webkit-border-top-left-radius:5px;-webkit-border-top-right-radius:5px;}
+#erdtb_bot #er_developer_toolbar ul > li:hover div.sub{bottom:21px;padding-bottom:12px;}
+#erdtb_bot #er_developer_toolbar span.arrow{display:block;width:17px;height:10px;background:url(sprite.png) -107px -31px no-repeat;position:absolute;bottom:4px;left:33px;}
+#erdtb_bot #er_developer_toolbar ul > li > div.sub li:hover > .sub2{bottom:-30px;}
+#erdtb_bot #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{bottom:33px;}
 
 
 .erdtb_hor {width:100px;left:4%;padding:4px 15px;}
@@ -100,6 +100,7 @@ ER Developer Toolbar CSS
 #er_developer_toolbar a#addons{background-position:-240px 0px;}
 #er_developer_toolbar a#sql{background-position:-264px 0px;}
 #er_developer_toolbar a#edit{background-position:-312px 0px;}
+#er_developer_toolbar a#publish{background-position:-96px 0px;}
 #er_developer_toolbar a#utility{background-position:-336px 0px;}
 #er_developer_toolbar #move{float:left;background-position:-290px 0px;cursor:move;}
 #er_developer_toolbar .status_on a,#er_developer_toolbar .status_off a,#er_developer_toolbar .status_on2 a{padding-left:16px;background-image:url(sprite.png);background-repeat:no-repeat;}
@@ -116,27 +117,4 @@ ER Developer Toolbar CSS
 #er_developer_toolbar ul > li:hover div.sub ul{background:#d8dbe5;border:1px solid #434343;padding:8px 24px 8px 14px;-moz-border-radius:5px;-webkit-border-radius:5px;}
 #er_developer_toolbar ul > li > ul li{float:none;}
 #er_developer_toolbar ul > li:hover a#edit + div.sub{width:250px;}
-/*******************************
-Top Aligned
-******************************/
 
-/*******************************
-Bottom Aligned
-******************************/
-
-
-/*******************************
-Horizontal (top and bottom)
-******************************/
-
-/*******************************
-Left Aligned
-******************************/
-
-/*******************************
-Right Aligned
-*******************************/
-
-/*******************************
-Vertical (left and right)
-******************************/

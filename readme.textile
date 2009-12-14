@@ -88,7 +88,7 @@ h2. Change Log
 
 *+Dec 14, 2009: 1.1.0+*
 * Added fly-out menus for template groups
-* Added flu-out menus for editing templates
+* Added fly-out menus for editing templates
 * Re-factored some php in preparation for migrating add-on to module/EE2.x status
 * Re-factored toolbar/style.css
 * Updated toolbar/sprite.png

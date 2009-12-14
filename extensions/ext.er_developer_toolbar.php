@@ -26,7 +26,7 @@ class Er_developer_toolbar
 {
    
    private  $settings       = array();
-   private  $name           = ER_DTB_name;
+   public   $name           = ER_DTB_name;
    public   $version        = ER_DTB_version;
    public   $description    = 'Adds a developer toolbar as a global variable available within your templates';
    public   $settings_exist = 'y';
@@ -701,12 +701,12 @@ class Er_developer_toolbar
          if ($this->settings['horizontal_logo'] != '')
          {
             $IN->global_vars['er_developer_toolbar_head'] .= "
-      #er_developer_toolbar.hor p.toolbar_heading { background: url(".$this->settings['horizontal_logo'].") 0 0; }";
+      .erdtb_hor #er_developer_toolbar p.toolbar_heading { background: url(".$this->settings['horizontal_logo'].") 0 0; }";
          }
          if ($this->settings['vertical_logo'] != '')
          {
             $IN->global_vars['er_developer_toolbar_head'] .= "
-      #er_developer_toolbar.vert p.toolbar_heading { background: url(".$this->settings['vertical_logo'].") 0 0; }";
+      .erdtb_vert #er_developer_toolbar p.toolbar_heading { background: url(".$this->settings['vertical_logo'].") 0 0; }";
          }
          if ($this->settings['font_color'] != '')
          {

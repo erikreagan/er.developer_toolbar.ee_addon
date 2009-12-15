@@ -86,7 +86,11 @@ The icons used in the toolbar are from the icon set _Fugue_ by Yusuke Kamiyamane
 
 h2. Change Log
 
-*+Dec 14, 2009: 1.1.0+*
+*+Dec 14, 2009: 1.1.1+*
+* Altered templates menu to only show templates from current site (only applies to MSM)
+* Gave extension a higher priority setting solving some cached settings issues with other extensions
+
+*Dec 14, 2009: 1.1.0*
 * Added fly-out menus for template groups
 * Added fly-out menus for editing templates
 * Re-factored some php in preparation for migrating add-on to module/EE2.x status

@@ -7,7 +7,7 @@
  * /system/extensions/ folder in your ExpressionEngine installation.
  *
  * @package ERDeveloperToolbar
- * @version 1.1.0
+ * @version 1.1.1
  * @author Erik Reagan http://erikreagan.com
  * @copyright Copyright (c) 2009 Erik Reagan
  * @see http://erikreagan.com/projects/er-developer-toolbar/
@@ -18,7 +18,7 @@ if ( ! defined('EXT')) exit('Invalid file request');
 
 
 define('ER_DTB_name', 'ER Developer Toolbar');
-define('ER_DTB_version', '1.1.0');
+define('ER_DTB_version', '1.1.1');
 define('ER_DTB_underscores', 'Er_developer_toolbar');
 
 
@@ -565,7 +565,7 @@ class Er_developer_toolbar
                'method'       => $method,
                'hook'         => $hook,
                'settings'     => serialize($settings),
-               'priority'     => 10,
+               'priority'     => 1,
                'version'      => ER_DTB_version,
                'enabled'      => "y"
             )
@@ -739,7 +739,7 @@ class Er_developer_toolbar
 ";
       }
       
-
+      
       $IN->global_vars['er_developer_toolbar'] = $this->create_toolbar($user_access);
       
    }
@@ -1234,17 +1234,18 @@ class Er_developer_toolbar
     */
    private function piece_templates($access = NULL)
    {
-      global $DB;
+      global $PREFS,$DB;
       
       if ($access['is_super_admin'])
       {
-         $groups = $DB->query("SELECT group_id,site_id,group_name FROM exp_template_groups ORDER BY group_order");
+         $groups = $DB->query("SELECT group_id,site_id,group_name FROM exp_template_groups WHERE site_id = '".$PREFS->ini('site_id')."' ORDER BY group_order");
       } else {
          $groups = $DB->query("SELECT tg.group_id,tg.site_id,tg.group_name
                                FROM exp_template_groups AS tg
                                JOIN exp_template_member_groups AS mg
                                ON mg.template_group_id = tg.group_id
                                WHERE mg.group_id = '".$access['group_id']."'
+                               AND tg.site_id = '".$PREFS->ini('site_id')."'
                                ORDER BY tg.group_order");
       }
       

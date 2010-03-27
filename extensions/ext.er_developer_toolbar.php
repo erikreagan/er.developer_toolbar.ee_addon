@@ -7,10 +7,11 @@
  * /system/extensions/ folder in your ExpressionEngine installation.
  *
  * @package ERDeveloperToolbar
- * @version 1.1.1
+ * @version 1.1.2
  * @author Erik Reagan http://erikreagan.com
  * @copyright Copyright (c) 2009 Erik Reagan
  * @see http://erikreagan.com/projects/er-developer-toolbar/
+ * @license http://creativecommons.org/licenses/by-nd/3.0/ Creative Commons Attribution-No Derivative Works 3.0 Unported
  */
 
 
@@ -18,7 +19,7 @@ if ( ! defined('EXT')) exit('Invalid file request');
 
 
 define('ER_DTB_name', 'ER Developer Toolbar');
-define('ER_DTB_version', '1.1.1');
+define('ER_DTB_version', '1.1.2');
 define('ER_DTB_underscores', 'Er_developer_toolbar');
 
 
@@ -730,7 +731,7 @@ class Er_developer_toolbar
       if ($this->settings['new_window'] == 'y')
       {
          $IN->global_vars['er_developer_toolbar_head'] .= "
-   <script tyle='text/javascript' charset='utf-8'>
+   <script type='text/javascript' charset='utf-8'>
       $(document).ready(function(){
          jQuery('#er_developer_toolbar a').attr('target','_blank');
          jQuery('#er_developer_toolbar a.self').attr('target','');
@@ -1205,10 +1206,13 @@ class Er_developer_toolbar
             <ul>
                <li><strong>General Statuses</strong></li>
                <li class='status_$system_status'><a title='System is ".ucfirst($system_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='system_status'>System Status</a></li>";
-
-      $site_status = ($PREFS->core_ini['is_site_on'] == 'y') ? 'on' : 'off' ;
-      $statuses .= "
+      
+      if ($PREFS->ini('multiple_sites_enabled') == 'y')
+      {
+         $site_status = ($PREFS->ini('is_site_on') == 'y') ? 'on' : 'off' ;
+         $statuses .= "
                <li class='status_$site_status'><a title='Site is ".ucfirst($site_status)."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=general_cfg' id='site_status'>Site Status</a></li>";
+      }
 
       $statuses .= "
                <li class='status_$debug_status'><a title='".$debug_message."' href='".CP_URL."?C=admin&amp;M=config_mgr&amp;P=output_cfg' id='debug_status'>Debug Status</a></li>

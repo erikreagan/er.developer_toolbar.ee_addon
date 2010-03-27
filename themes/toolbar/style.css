@@ -1,26 +1,28 @@
-.er_developer_toolbar_container {position:fixed;display:block;z-index:9999999999;background:#d8dbe5;border:1px solid #434343;color:#000;}
-.er_developer_toolbar_container.inactive { padding:0 !important;border:none !important;}
-
-
-#erdtb_top {top:0px;border-top:none;-moz-border-radius-bottomleft:5px;-moz-border-radius-bottomright:5px;-webkit-border-bottom-left-radius:5px;-webkit-border-bottom-right-radius:5px;}
+/*******************************
+Styles for the top toolbar
+*******************************/
+#erdtb_top{top:0px;border-top:none;-moz-border-radius-bottomleft:5px;-moz-border-radius-bottomright:5px;-webkit-border-bottom-left-radius:5px;-webkit-border-bottom-right-radius:5px;}
 #erdtb_top #er_developer_toolbar ul > li:hover div.sub{top:21px;left:-30px;padding-top:12px;}
 #erdtb_top #er_developer_toolbar span.arrow{display:block;width:17px;height:10px;background:url(sprite.png) -128px -30px no-repeat;position:absolute;top:4px;left:34px;}
 #erdtb_top #er_developer_toolbar ul > li > div.sub li:hover > .sub2{top:-33px;;}
 #erdtb_top #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{top:33px;}
-
-#erdtb_bot {bottom:0px;border-bottom:none;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;-webkit-border-top-left-radius:5px;-webkit-border-top-right-radius:5px;}
+/*******************************
+Styles for the bottom toolbar
+*******************************/
+#erdtb_bot{bottom:0px;border-bottom:none;-moz-border-radius-topleft:5px;-moz-border-radius-topright:5px;-webkit-border-top-left-radius:5px;-webkit-border-top-right-radius:5px;}
 #erdtb_bot #er_developer_toolbar ul > li:hover div.sub{bottom:21px;padding-bottom:12px;}
 #erdtb_bot #er_developer_toolbar span.arrow{display:block;width:17px;height:10px;background:url(sprite.png) -107px -31px no-repeat;position:absolute;bottom:4px;left:33px;}
 #erdtb_bot #er_developer_toolbar ul > li > div.sub li:hover > .sub2{bottom:-30px;}
 #erdtb_bot #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{bottom:33px;}
-
-
-.erdtb_hor {width:100px;left:4%;padding:4px 15px;}
+/*******************************
+Styles for horizontal toolbars
+*******************************/
+.erdtb_hor{width:100px;left:4%;padding:4px 15px;}
 .erdtb_hor #er_developer_toolbar p.toolbar_heading{float:left;width:100px;height:25px;background:url(sprite.png) 0px -24px no-repeat;}
 .erdtb_hor #er_developer_toolbar > ul{float:left;}
 .erdtb_hor #er_developer_toolbar > ul > li{float:left;}
 .erdtb_hor #er_developer_toolbar .divider{display:block;float:left;width:4px;height:24px;margin:0 10px;background:url(sprite.png) -100px -24px no-repeat;}
-.erdtb_hor #er_developer_toolbar > ul, .erdtb_hor #er_developer_toolbar > .divider {display: none;}
+.erdtb_hor #er_developer_toolbar > ul,.erdtb_hor #er_developer_toolbar > .divider{display:none;}
 .erdtb_hor #er_developer_toolbar ul > li:hover div.sub{left:-30px;}
 .erdtb_hor #er_developer_toolbar span.arrow{left:35px;}
 .erdtb_hor #er_developer_toolbar ul#toolbar_member_data li{float:left;margin-right:20px;}
@@ -31,39 +33,37 @@
 .erdtb_hor #er_developer_toolbar ul#clock span.arrow{left:186px;}
 .erdtb_hor #er_developer_toolbar ul > li > div.sub li:hover > .sub2{display:block;position:absolute;padding-left:47px;left:141px;}
 .erdtb_hor #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{display:block;width:10px !important;height:17px !important;background:url(sprite.png) -173px -27px no-repeat !important;position:absolute;left:39px !important;}
-
-
-
-
-
-
-#erdtb_left {left:0px;border-left:none;-moz-border-radius-topright:5px;-moz-border-radius-bottomright:5px;-webkit-border-top-right-radius:5px;-webkit-border-bottom-right-radius:5px;}
+/*******************************
+Styles for the left toolbar
+*******************************/
+#erdtb_left{left:0px;border-left:none;-moz-border-radius-topright:5px;-moz-border-radius-bottomright:5px;-webkit-border-top-right-radius:5px;-webkit-border-bottom-right-radius:5px;}
 #erdtb_left #er_developer_toolbar ul > li:hover div.sub{left:19px;top:-30px;padding-left:14px;}
 #erdtb_left #er_developer_toolbar #clock{left:4px;}
 #erdtb_left #er_developer_toolbar span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -173px -27px no-repeat;position:absolute;left:6px;top:34px;}
 #erdtb_left #er_developer_toolbar ul > li > div.sub li:hover > .sub2{padding-left:29px;left:160px;}
 #erdtb_left #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{left:21px;}
-
-
-#erdtb_right {right:0px;border-right:none;-moz-border-radius-topleft:5px;-moz-border-radius-bottomleft:5px;-webkit-border-top-left-radius:5px;-webkit-border-bottom-left-radius:5px;}
+/*******************************
+Styles for the right toolbar
+*******************************/
+#erdtb_right{right:0px;border-right:none;-moz-border-radius-topleft:5px;-moz-border-radius-bottomleft:5px;-webkit-border-top-left-radius:5px;-webkit-border-bottom-left-radius:5px;}
 #erdtb_right #er_developer_toolbar ul > li:hover div.sub{right:21px;padding-right:14px;}
 #erdtb_right #er_developer_toolbar span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -152px -27px no-repeat;position:absolute;right:6px;}
 #erdtb_right #er_developer_toolbar #clock{right:4px;}
 #erdtb_right #er_developer_toolbar ul > li > div.sub li:hover > .sub2{padding-right:19px;right:160px;}
 #erdtb_right #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{background:url(sprite.png) -152px -27px no-repeat !important;right:12px;}
-#erdtb_right #er_developer_toolbar .more { background-position: left -72px; padding-left: 10px; }
-
-
-
-.erdtb_vert {height:25px;top:3%;padding:10px 4px;}
-.erdtb_vert #er_developer_toolbar p.toolbar_heading{width:25px;height:25px;background: url(sprite.png) -234px -23px no-repeat;}
+#erdtb_right #er_developer_toolbar .more{background-position:left -72px;padding-left:10px;}
+/*******************************
+Styles for vertical toolbars
+*******************************/
+.erdtb_vert{height:25px;top:3%;padding:10px 4px;}
+.erdtb_vert #er_developer_toolbar p.toolbar_heading{width:25px;height:25px;background:url(sprite.png) -234px -23px no-repeat;}
 .erdtb_vert #er_developer_toolbar > ul > li div.sub{width:200px;}
 .erdtb_vert #er_developer_toolbar ul > li:hover div.sub{top:-30px;}
 .erdtb_vert #er_developer_toolbar span.arrow{top:35px;}
 .erdtb_vert #er_developer_toolbar ul > li > div.sub li:hover > .sub2{top:-62px;}
 .erdtb_vert #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{top:65px;}
 .erdtb_vert #er_developer_toolbar .divider{display:block;width:24px;height:4px;margin:10px auto;background:url(sprite.png) -194px -35px no-repeat;}
-.erdtb_vert #er_developer_toolbar > ul, .erdtb_vert #er_developer_toolbar > .divider {display: none;}
+.erdtb_vert #er_developer_toolbar > ul,.erdtb_vert #er_developer_toolbar > .divider{display:none;}
 .erdtb_vert #er_developer_toolbar ul > li > div.sub li:hover > .sub2{display:block;position:absolute;width:200px;}
 .erdtb_vert #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{display:block;width:10px;height:17px;background:url(sprite.png) -173px -27px no-repeat;position:absolute;}
 .erdtb_vert #er_developer_toolbar #clock{position:absolute;bottom:1%;}
@@ -71,22 +71,21 @@
 .erdtb_vert #er_developer_toolbar ul#clock > li:hover > div.sub span.arrow{top:91px;}
 .erdtb_vert #er_developer_toolbar ul > li > div.sub li:hover > .sub2{top:-29px;}
 .erdtb_vert #er_developer_toolbar ul > li > div.sub li:hover > .sub2 span.arrow{top:32px;}
-
-
-
 /*******************************
-ER Developer Toolbar CSS
+Styles for all toolbars
 *******************************/
-#er_developer_toolbar {font:12px Arial,sans-serif;}
-#er_developer_toolbar .more { background-image: url(arrows.png); background-repeat: no-repeat; }
-#er_developer_toolbar .more { background-position: right -48px; }
+.er_developer_toolbar_container{position:fixed;display:block;z-index:9999999999;background:#d8dbe5;border:1px solid #434343;color:#000;}
+.er_developer_toolbar_container.inactive{padding:0 !important;border:none !important;}
+#er_developer_toolbar{font:12px Arial,sans-serif;}
+#er_developer_toolbar .more{background-image:url(arrows.png);background-repeat:no-repeat;}
+#er_developer_toolbar .more{background-position:right -48px;}
 #er_developer_toolbar a,#er_developer_toolbar a:visited{display:block;color:#0f2f5b;text-decoration:none;}
 #er_developer_toolbar a:hover{text-decoration:underline;}
 #er_developer_toolbar a:active{outline:none;}
 #er_developer_toolbar a:focus{-moz-outline-style:none;}
 #er_developer_toolbar a.no_link{cursor:default;}
 #er_developer_toolbar p.toolbar_heading{display:block;text-indent:-999999px;}
-#er_developer_toolbar p,#er_developer_toolbar a,#er_developer_toolbar ul,#er_developer_toolbar li{margin:0px;padding:0px;}
+#er_developer_toolbar p,#er_developer_toolbar a,#er_developer_toolbar ul,#er_developer_toolbar li{margin:0px;padding:0px;font-size:12px;}
 #er_developer_toolbar ul{list-style:none;}
 #er_developer_toolbar > ul li{line-height:24px;position:relative;}
 #er_developer_toolbar .icon{display:block;width:24px;height:24px;text-indent:-999999px;background-image:url(sprite.png);}
@@ -117,4 +116,3 @@ ER Developer Toolbar CSS
 #er_developer_toolbar ul > li:hover div.sub ul{background:#d8dbe5;border:1px solid #434343;padding:8px 24px 8px 14px;-moz-border-radius:5px;-webkit-border-radius:5px;}
 #er_developer_toolbar ul > li > ul li{float:none;}
 #er_developer_toolbar ul > li:hover a#edit + div.sub{width:250px;}
-

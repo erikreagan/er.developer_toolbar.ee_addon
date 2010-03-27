@@ -86,7 +86,13 @@ The icons used in the toolbar are from the icon set _Fugue_ by Yusuke Kamiyamane
 
 h2. Change Log
 
-*+Dec 14, 2009: 1.1.1+*
++*Mar 27, 2010: 1.1.2*+
+* Fixed "Site Status" display when not running MSM (bug popped up in 1.1.0)
+* Filtered CSS file of additional whitespace
+* Fixed typo in one javascript line (wasn't causing a bug, just a typo)
+* Assigned license to add-on: "Creative Commons Attribution-No Derivative Works 3.0 Unported":http://creativecommons.org/licenses/by-nd/3.0/ 
+
+*Dec 14, 2009: 1.1.1*
 * Altered templates menu to only show templates from current site (only applies to MSM)
 * Gave extension a higher priority setting solving some cached settings issues with other extensions
 
